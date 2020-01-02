@@ -1,0 +1,120 @@
+#!/usr/bin/env python3
+
+import argparse
+import sys
+import os
+import csv
+import numpy
+
+from os import path
+from collections import defaultdict
+
+DATA_FILE = 'data/speedometer-raw.tsv'
+
+ROOT_DIR = path.dirname(path.realpath(__file__))
+
+MSTATS_DIR = path.join(ROOT_DIR, 'speedometer-mstats')
+
+# from rainbow
+def make_reporter(verbosity, quiet, filelike):
+    '''
+    Returns a function suitible for logging use.
+    '''
+    if not quiet:
+        def report(level, msg, *args):
+            'Log if the specified severity is <= the initial verbosity.'
+            if level <= verbosity:
+                if len(args):
+                    filelike.write(msg % args + '\n')
+                else:
+                    filelike.write('%s\n' % (msg, ))
+    else:
+        def report(level, msg, *args):
+            '/dev/null logger.'
+            pass
+
+    return report
+
+
+ERROR = 0
+WARN = 1
+INFO = 2
+DEBUG = 3
+log = make_reporter(WARN, False, sys.stderr)
+
+
+def slurp(fname):
+    with open(fname, 'r') as f:
+        return f.read()
+
+
+def mem_stats(allocator):
+    mstats_dir = path.join(MSTATS_DIR)
+    logs = [f for f in os.listdir(mstats_dir) if f.startswith('speedometer.{}.'.format(allocator))]
+    usage = []
+    for log_file in logs:
+        log_path = path.join(mstats_dir, log_file)
+        with open(log_path, newline='') as log_file:
+            this_usage = []
+            reader = csv.DictReader(log_file, dialect=csv.excel_tab)
+            for row in reader:
+                # convert from bytes to MB
+                total = int(row['rss']) + int(row['kernel'])
+                this_usage.append(int(total)/1024.0/1024.0)
+            usage.append(numpy.mean(this_usage))
+    usage = numpy.array(usage)
+
+    amax = numpy.amax(usage)
+    mean = numpy.mean(usage)
+    median = numpy.median(usage)
+    stddev = numpy.std(usage)
+
+    log(DEBUG, '%s: %d %.2f %.2f (+- %.2f) %.2f', allocator, len(usage), median, mean, stddev, amax)
+
+    return {
+        'max': amax,
+        'mean': mean,
+        'median': median,
+        'stddev': stddev,
+    }
+
+
+def main():
+    global log
+
+    parser = argparse.ArgumentParser(description='Build a table we can easily use in R from raw SPEC data.')
+    parser.add_argument('-v', action='store_const', const=True, help='print commit messages too')
+    parser.add_argument('output', nargs='?', type=str, default='', help='output file')
+    args = parser.parse_args()
+
+    if args.v:
+        log = make_reporter(DEBUG, False, sys.stderr)
+
+    memory = defaultdict(list)
+    scores = defaultdict(list)
+
+    with open(DATA_FILE, newline='') as data_file:
+        reader = csv.DictReader(data_file, dialect=csv.excel_tab)
+        for row in reader:
+            memory[row['allocator']].append(int(0))
+            scores[row['allocator']].append(float(row['score']))
+
+    # print(numpy.array(memory['glibc']))
+    jemalloc_mstats = mem_stats('jemalloc')
+    ref_usage = jemalloc_mstats['mean']
+    ref_score = numpy.mean(numpy.array(scores['jemalloc']))
+
+    print('allocator\tmean_relative\tmean_mb\tstddev_mb\tscore\tscore_relative\tscore_stddev')
+    for allocator in sorted(memory.keys()):
+        mstats = mem_stats(allocator)
+        usage = numpy.array(memory[allocator])
+        mean = mstats['mean']
+        stddev = mstats['stddev']
+        score = numpy.array(scores[allocator])
+        avg_score = numpy.mean(score)
+        stddev_score = numpy.std(score)
+        print('%s\t%.3f\t%.3f\t%.3f\t%.2f\t%.2f\t%.2f' % (allocator, mean / ref_usage, mean, stddev, avg_score, avg_score / ref_score, stddev_score))
+
+
+if __name__ == '__main__':
+    sys.exit(main())

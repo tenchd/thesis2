@@ -1,0 +1,143 @@
+\section{Related Work}
+\label{sec:related-work}
+
+\paragraph{Hound:}
+\label{sec:hound}
+Hound is a memory leak detector for C/C++ applications that introduced
+meshing (a.k.a. ``virtual compaction''), a mechanism that \Mesh{}
+leverages~\cite{1542521}. Hound combines an age-segregated heap with
+data sampling to precisely identify leaks. Because Hound cannot
+reclaim memory until every object on a page is freed, it relies on a
+heuristic version of meshing to prevent catastrophic memory
+consumption. Hound is unsuitable as a replacement general-purpose
+allocator; it lacks both \Mesh's theoretical guarantees and space and
+runtime efficiency (Hound's repository is missing files and it does
+not build, precluding a direct empirical comparison here). The Hound
+paper reports a geometric mean slowdown of $\approx 30\%$ for
+SPECint2006 (compared to \Mesh{}'s 0.7\%), slowing one benchmark
+(\texttt{xalancbmk}) by almost $10\times$. Hound also generally
+\emph{increases} memory consumption, while \Mesh often substantially
+decreases it.
+
+%Finally, Hound was designed for
+%32-bit Linux applications, making more direct comparisons to Mesh
+%(which is focused on 64-bit applications) hard.
+
+
+\paragraph{Compaction for C/C++:}
+Previous work has described a variety of manual and compiler-based
+approaches to support compaction for C++. Detlefs shows that if
+developers use annotations in the form of smart pointers, C++ code can
+also be managed with a relocating garbage
+collector~\cite{detlefs:1992:gc}.  Edelson introduced GC support
+through a combination of automatically generated smart pointer classes
+and compiler transformations that support relocating
+GC~\cite{edelson:1992:precompilingcgc}. Google's Chrome uses an
+application-specific compacting GC for C++ objects called Oilpan that
+depends on the presence of a single event
+loop~\cite{google:oilpan}. Developers must use a variety of smart
+pointer classes instead of raw pointers to enable GC and
+relocation. This effort took years. Unlike these approaches, \Mesh is
+fully general, works for unmodified C and C++ binaries, and does not
+require programmer or compiler support; its compaction approach is
+orthogonal to GC.
+
+CouchDB and Redis implement \emph{ad hoc} best-effort compaction,
+which they call ``defragmentation''.  These work by iterating through
+program data structures like hash tables, copying each object's
+contents into freshly-allocated blocks (in the hope they will be
+contiguous), updating pointers, and then freeing the old
+objects~\cite{jemalloc:exposehints,redis:announcement}. This
+application-specific approach is not only inefficient (because it may
+copy objects that are already densely packed) and brittle (because it
+relies on internal allocator behavior that may change in new
+releases), but it may also be ineffective, since the allocator cannot
+ensure that these objects are actually contiguous in memory. Unlike
+these approaches, \Mesh performs compaction efficiently and its
+effectiveness is guaranteed.
+
+\paragraph{Compacting garbage collection in managed languages:}
+%% Recently Baker et al. showed that with compiler support you could
+%% achieve accurate GC for C and C++~\cite{baker:2009:accurategc}.
+Compacting garbage collection has long been a feature of languages
+like LISP and
+Java~\cite{hansen:1969:compaction,fenichel:1969:compaction}. Contemporary
+runtimes like the Hotspot JVM~\cite{microystems2006memory}, the .NET
+VM~\cite{microsoft:dotnet-gc}, and the SpiderMonkey JavaScript
+VM~\cite{mozilla:spidermonkey-compaction} all implement compaction as
+part of their garbage collection algorithms. \Mesh{} brings the
+benefits of compaction to C/C++; in principle, it could also be used
+to automatically enable compaction for language implementations that
+rely on non-compacting collectors.
+
+\paragraph{Bounds on Partial Compaction:}
+Cohen and Petrank prove upper and lower bounds on defragmentation via
+partial compaction~\cite{Cohen:2017:LPC:3050768.2994597,
+  Cohen:2013:LPC:2491956.2491973}. In their setting, corresponding to
+managed environments, \emph{every} object \emph{may} be relocated to
+any free memory location; they ask what space savings can be achieved
+if the memory manager is only allowed to relocate a bounded number of
+objects. By contrast, \Mesh{} is designed for unmanaged languages
+where objects \emph{cannot} be arbitrarily relocated.
+
+%\paragraph{Hardware support:}
+%Seshadri \emph{et al.} present a hardware proposal that would allow
+%for ``page overlays'' at a cache-line
+%granularity~\cite{Seshadri:2015:POE:2749469.2750379}. \Mesh could use
+%such a facility instead of page remapping to mesh pages containing
+%objects of a cache line size (e.g., 64 bytes) or larger.
+
+\paragraph{PCM fault mitigation:}
+Ipek \emph{et al.} use a technique similar to meshing to address the
+degradation of phase-change memory (PCM) over the lifetime of a
+device~\cite{ipek:2010:dynamic-replication}.  The authors introduce
+dynamically replicated memory (DRM), which uses pairs of PCM pages
+with non-overlapping bit failures to act as a single page of
+(non-faulty) storage.  When the memory controller reports a page with
+new bit failures, the OS attempts to pair it with a complementary
+page. A random graph analysis is used to justify this greedy
+algorithm.
+
+DRM operates in a qualitatively different domain than \Mesh.  In DRM,
+the OS occasionally attempts to pair newly faulty pages
+against a list of pages with static bit failures.  This process is
+incremental and local.  In \Mesh, the occupancy of spans in the heap
+is more dynamic and much less local. \Mesh solves a full,
+non-incremental version of the meshing problem each cycle.
+Additionally, in DRM, the random graph describes an error model rather
+than a design decision; additionally, the paper's analysis is flawed.
+The paper erroneously claims that the resulting graph is a simple
+random graph; in fact, its edges are not independent (as we show in
+\S\ref{subsec:matching}).  This invalidates the claimed performance
+guarantees, which depend on properties of simple random graphs. In
+contrast, we prove the efficacy of our original \sm algorithm for
+\Mesh using a careful random graph analysis.
+
+\begin{comment}
+  To avoid catastrophic memory consumption,
+Hound employs virtual compaction, a non-randomized, best-effort form
+of meshing. Their approach depends on heuristics and does not employ
+randomization or come with any guarantees of fragmentation
+recovery.
+  Hound is not intended to be
+space-efficient (and it is not) but rather to find leaks. Hound
+identifies leaks by segregating objects by allocation site, protects
+``cold'' pages, and delays reuse of pages until every object on that
+page has been freed.
+\end{comment}
+
+%% Virtual memory operations have additionally been use for compaction in
+%% a Java garbage collector~\cite{wegiel:2008:mapping-collector} in a
+%% novel collector, as well as in a C allocator that traded address space
+%% usage for reliability and security~\cite{1346296}.
+
+%Microsoft's C++/CLI? C++ with GC'ed, moveable objects.
+
+
+% http://www.filpizlo.com/papers/baker-ccpe09-accurate.pdf
+
+
+%Theory?
+
+%% Objects with similar lifetimes tend to appear
+%% together~\cite{wilson:1995:survey}.

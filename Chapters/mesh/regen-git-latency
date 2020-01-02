@@ -1,0 +1,16 @@
+#!/bin/bash
+set -Eeuo pipefail
+
+LD_PRELOAD='liblatalloc.so libmesh.so' git status 2>/dev/null
+sleep 1
+LD_PRELOAD='liblatalloc.so' git status 2>~/src/mesh-paper/data/git-latency/latency.glibc
+sleep 1
+LD_PRELOAD='liblatalloc.so libmesh.so' git status 2>~/src/mesh-paper/data/git-latency/latency.mesh
+sleep 1
+LD_PRELOAD='liblatalloc.so libhoard.so' git status 2>~/src/mesh-paper/data/git-latency/latency.hoard
+sleep 1
+LD_PRELOAD='liblatalloc.so libjemalloc.so' git status 2>~/src/mesh-paper/data/git-latency/latency.jemalloc
+sleep 1
+LD_PRELOAD='liblatalloc.so libtcmalloc_minimal.so' git status 2>~/src/mesh-paper/data/git-latency/latency.tcmalloc
+sleep 1
+LD_PRELOAD='liblatalloc.so libdiehard.so' git status 2>~/src/mesh-paper/data/git-latency/latency.diehard

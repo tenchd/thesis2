@@ -1,0 +1,10 @@
+allocator	rss
+mesh	364867584
+mesh	364748800
+mesh	359923712
+mozjemalloc	402370560
+mozjemalloc	402317312
+mozjemalloc	402907136
+glibc	403537920
+glibc	405884928
+glibc	409251840

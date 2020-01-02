@@ -1,0 +1,6 @@
+allocator	mean_relative	mean_mb	stddev_mb	score	score_relative	score_stddev
+jemalloc	1.000	631.910	25.353	50.75	1.00	0.45
+mesh0n	0.872	550.962	16.356	52.77	1.04	0.31
+mesh0y	0.832	525.767	23.550	50.10	0.99	0.44
+mesh1y	0.829	523.541	22.294	50.13	0.99	0.41
+mesh2y	0.839	530.113	22.367	49.99	0.99	0.50

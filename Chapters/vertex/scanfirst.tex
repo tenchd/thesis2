@@ -1,0 +1,10 @@
+A scan first search tree (SFST) of a graph \cite{CheriyanKT93} is defined as follows: The tree is initially empty, all vertices except the root (chosen arbitrarily) are \emph{unmarked}, and 
+ all vertices are \emph{unscanned}. At each step we \emph{scan} an marked but unscanned vertex. For each vertex $x$ that is being scanned, all edges from $x$ to unmarked neighbors of $x$ are added to the tree and the unmarked neighbors are marked. This continues until no marked but unscanned vertices remain.
+
+\begin{theorem}
+Any data stream algorithm that constructs a SFST with probability at least $3/4$ requires $\Omega(n^2)$ space.
+\end{theorem}
+\begin{proof}
+The proof is by a reduction from the communication problem of indexing \cite{Ablayev96}. Suppose Alice has a binary string $x\in \{0,1\}^{n^2}$ indexed by $[n]\times [n]$ and Bob wants to compute $x_{i,j}$ for some index $(i,j)\in [n]\times [n]$ that is unknown to Alice. This requires $\Omega(n^2)$ bits to be communicated from Alice to Bob if Bob is to learn $x_{i,j}$ with probability at least $3/4$.
+Suppose we have a data stream algorithm for constructing an SFST. Alice creates a graph on nodes $T\cup U\cup V \cup W$ where $T=\{t_1, \ldots, t_n\}, U=\{u_1, \ldots, u_n\}, V=\{v_1, \ldots, v_n\}$, and $W=\{w_1, \ldots, w_n\}$. She adds edges $\{t_k,u_\ell\}$ and $\{v_\ell,t_k\}$ for each $\ell,k$ such that $x_{\ell,k}=1$.  Alice runs the scan-first search algorithm and sends the contents of her memory to Bob. Bob adds the edge $\{u_i,v_i\}$. Note that any SFST includes all neighbors of $u_i$ or $v_i$. In particular, $x_{i,j}=1$ iff at least one of $\{t_j,u_i\}$ or $\{v_i,w_j\}$ is present in the SFST constructed. Hence, the algorithm must have used $\Omega(n^2)$ space.
+\end{proof}

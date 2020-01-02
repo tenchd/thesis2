@@ -1,0 +1,691 @@
+
+\iffalse
+%\documentclass[11pt]{article}  
+%\documentclass[twoside,leqno,twocolumn]{article}  
+%\usepackage{ltexpprt} 
+
+%\documentclass{sig-alternate-2013}
+
+\usepackage{url}
+%\usepackage{color,fullpage,microtype}
+%\usepackage{graphicx,wrapfig,subfigure,titling}
+\usepackage{amssymb,amsmath,amssymb,amsfonts}
+%\usepackage{amsthm}
+\usepackage{textcomp}
+\usepackage{multirow}
+\usepackage{gensymb}
+\usepackage{array}
+\usepackage{times}
+\usepackage[sort]{cite}
+
+\newtheorem{theorem}{Theorem}%[section]
+\newtheorem{definition}[theorem]{Definition}
+
+\newtheorem{proposition}[theorem]{Proposition}%[section]
+\newtheorem{corollary}[theorem]{Corollary}%[section]
+\newtheorem{lemma}[theorem]{Lemma}%[section]
+\newtheorem{conjecture}[theorem]{Conjecture}%[section]
+\newtheorem{fact}{Fact}
+\newtheorem{problem}{Problem}
+\newtheorem{example}{Example}
+\newtheorem{claim}{Claim}
+
+%\newcommand{\vecx}{\mathbf{x}} 
+\newcommand{\vecy}{\mathbf{y}} 
+
+\newcommand{\expec}[1]{\mathbb E\left [ #1 \right ]}
+\newcommand{\rounddown}[1]{\left \lfloor  #1 \right \rfloor}
+\newcommand{\roundup}[1]{\left \lceil  #1 \right \rceil}
+\DeclareMathOperator{\polylog}{polylog}
+\DeclareMathOperator{\poly}{poly}
+\DeclareMathOperator{\light}{{light}}
+%\DeclareMathOperator{\outdeg}{out-deg}
+%\newcommand{\inneigh}{\Gamma^-}
+%\newcommand{\outneigh}{\Gamma^+}
+
+\newcommand{\todo}[1]{{\color{blue}[\textit{#1}]}}
+\newcommand{\reals}{{\mathbb R}}
+\newcommand{\prob}[1]{\mathbb P \left [ #1 \right ]}
+%\newcommand{\Egt}{U}
+%\newcommand{\Eslt}{D}
+
+\newcommand{\vecf}{\mathbf{f}} 
+
+%\newcommand{\sfv}{\begin{proof}See full version.\end{proof}}
+\newcommand{\sfv}{}
+\newcommand{\R}{{\mathbb R}}
+\renewcommand{\H}{{\cal H}}
+\renewcommand{\O}{{\cal O}}
+\newcommand{\etal}{{et al.~}}
+\newcommand{\rk}{\mbox{\sc Rk}}
+\newcommand{\hatyi}{\hat{y}_i}
+\newcommand{\hatk}{\hat{k}} 
+\newcommand{\veca}{\mathbf{a}} 
+\newcommand{\veczero}{\mathbf{0}}
+\newcommand{\vecone}{\mathbf{1}} 
+\newcommand{\vecx}{\mathbf{x}} 
+\newcommand{\delc}{{\Delta_C(i)}}
+\newcommand{\alg}{{\cal A}}
+\newcommand{\obj}{{\cal O}}
+\newcommand{\y}{{\mathbf Y}}
+\newcommand{\bin}{{\mathbf{Bin}}}
+\newcommand{\eat}[1]{}
+\newcommand{\acc}{E}
+\renewcommand{\k}{\kappa}
+
+\newcommand{\A}{{\cal A}}
+\newcommand{\B}{{\cal B}}
+
+\newcommand{\I}{{\cal I}}
+\newcommand{\D}{{\cal D}}
+\newcommand{\X}{{\cal X}}
+\newcommand{\Y}{{\cal Y}}
+\newcommand{\Z}{{\cal Z}}
+\renewcommand{\P}{{\cal P}}
+\renewcommand{\S}{{\cal S}}
+\newcommand{\cc}{cc}
+
+\newcommand{\E}{{\mathbf E}}
+%\newcommand{\comment}[1]{\marginpar{!!!}[#1]}
+
+\newcommand{\err}{{\mathcal E}}
+\newcommand{\comment}[1]{{\color{red} #1} \marginpar{!!!}}
+
+\title{Vertex and Hyperedge Connectivity\\
+ in Dynamic Graph Streams}
+
+\numberofauthors{3} 
+\author{
+% You can go ahead and credit any number of authors here,
+% e.g. one 'row of three' or two rows (consisting of one row of three
+% and a second row of one, two or three).
+%
+% The command \alignauthor (no curly braces needed) should
+% precede each author name, affiliation/snail-mail address and
+% e-mail address. Additionally, tag each line of
+% affiliation/address with \affaddr, and tag the
+% e-mail address with \email.
+%
+% 1st. author
+\alignauthor
+Sudipto Guha\titlenote{Supported by NSF Awards CCF-1117216.}\\
+       \affaddr{University of Pennsylvania}\\
+       \email{sudipto@seas.upenn.edu}
+% 2nd. author
+\alignauthor
+Andrew McGregor\titlenote{Supported by NSF Awards CCF-0953754, IIS-1251110,  CCF-1320719, and a Google Research Award.}\\
+       \affaddr{University of Massachusetts}\\
+       \email{mcgregor@cs.umass.edu}
+% 3rd. author
+\alignauthor David Tench\\
+       \affaddr{University of Massachusetts}\\
+       \email{dtench@cs.umass.edu}
+}
+
+%
+%\author{
+%Sudipto Guha\thanks{University of Pennsylvania. 
+%Supported by NSF Awards CCF-1117216.
+%\texttt{sudipto@seas.upenn.edu}}
+%\and 
+%Andrew McGregor\thanks{University of Massachusetts Amherst. Supported by NSF CAREER Award CCF-0953754.
+% \texttt{mcgregor@cs.umass.edu}. }
+% \and 
+%David Tench\thanks{University of Massachusetts Amherst. Supported by NSF CAREER Award CCF-0953754.
+% \texttt{dtench@cs.umass.edu}. }
+% }
+
+\newcommand{\pparagraph}[1]{\vspace{0.1in}\noindent{\bf \boldmath #1}}
+\date{}
+
+\newfont{\mycrnotice}{ptmr8t at 7pt}
+\newfont{\myconfname}{ptmri8t at 7pt}
+\let\crnotice\mycrnotice%
+\let\confname\myconfname%
+
+\permission{Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. Copyrights for components of this work owned by others than ACM must be honored. Abstracting with credit is permitted. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee. Request permissions from permissions@acm.org.}
+\conferenceinfo{PODS'15,}{May 31--June 4, 2015, Melbourne, Victoria, Australia.}
+\copyrightetc{Copyright \copyright~2015 ACM \the\acmcopyr}
+\crdata{978-1-4503-2757-2/15/05\ ...\$15.00.\\
+http://dx.doi.org/10.1145/2745754.2745763}
+
+\clubpenalty=10000 
+\widowpenalty = 10000
+
+\begin{document}
+
+\maketitle
+
+\fi
+
+%\begin{abstract}
+A growing body of work addresses the challenge of processing dynamic graph streams: a graph is defined by a sequence of edge insertions and deletions and the goal is to construct synopses and compute properties of the graph while using only limited memory. 
+Linear sketches have proved to be a powerful technique in this model and can also be used  to minimize communication in distributed graph processing. 
+
+We present the first linear sketches for estimating vertex connectivity and constructing hypergraph sparsifiers. 
+Vertex connectivity exhibits markedly different combinatorial structure than edge connectivity and appears to be harder to estimate in the dynamic graph stream model. Our hypergraph result generalizes the work of Ahn et al.~(PODS 2012) on graph sparsification and has the added benefit of significantly simplifying the previous results. One of the main ideas is related to the problem of reconstructing subgraphs that satisfy a specific sparsity property. We introduce a more general notion of graph degeneracy and extend the graph reconstruction result of Becker et al.~(IPDPS 2011).
+%Vertex connectivity is significantly different from edge connectivity 
+%and even the proof of existence of sparse certificates requires nontrivial algorithms (Cheriyan et al. SICOMP 1993). However existing techniques 
+%do not provide sublinear space algorithms in the dynamic setting -- which is addressed by the results herein. 
+%\end{abstract}
+
+%\category{F.2}{Analysis of Algorithms \& Problem Complexity}{}
+
+%\terms{Algorithms, Theory}
+
+%\keywords{data streams; graph sketching; vertex connectivity; hypergraphs; sparsification}
+
+\section{Introduction}
+
+Massive graphs arise in many applications. Popular examples include the web-graph, social networks, and biological networks but, more generally, graphs are a natural abstraction whenever we have information about both a set of basic entities and relationships between these entities. Unfortunately, it is not possible to use existing algorithms to process many of these graphs; many of these graphs are too large to be stored in main memory and are constantly changing. Rather, there is a growing need to design new algorithms for even basic graph problems in the relevant computational models. 
+
+In this paper, we consider algorithms in the dynamic data stream and linear sketching models. In the dynamic data stream model, a sequence of edge insertions and deletions defines an input graph and the goal is to solve a specific problem on this graph given only one-way access to the input sequence and limited working memory. While insert-only graph streaming has been an active area of research for over a decade, it is only relatively recently algorithms have been found that handle insertions and deletions\cite{AhnGM12a,AhnGM12b,AhnGM13,KapralovLMMS14,KapralovW14,GoelKP12,KutzkovP14a}. The main technique used in these algorithms is \emph{linear sketching} where a random linear projection of the input graph is maintained as the graph is updated. To be useful, we need to be able to a) store the projection of the graph in small space and b) solve the problem of interest given only the projection of the graph. While linear sketching is a classic technique for solving statistical problems in the data stream model, it was long thought unlikely to be useful in the context of combinatorial problems on graphs. Not only do linear sketches allow us to process edge deletions (a deletion can just be viewed as a ``negative" insertion) but the linearity of the resulting data structures enables a rich set of algorithmic operations to be performed after the sketch has been generated. Linear sketches are also a useful technique for reducing communication when processing distributed graphs. For a recent survey of graph streaming and sketching  see  \cite{McGregor14}.
+ 
+
+\subsection{Our Contributions and Related Work}
+We present sketch-based dynamic graph algorithms for three basic graph problems: computing vertex connectivity, graph reconstruction, and hypergraph sparsification. All our algorithms run in (low) polynomial time, typically linear in the number of edges. However, our primary focus is on space complexity, as is the convention in much of the data streams literature. In what follows, let $n$ denote the number of vertices in the graph.
+% algorithms, is  focus our attention on space complexity which is more critical in our setting.
+%All the algorithms use $O(n\polylog n)$ space.
+
+\pparagraph{Vertex Connectivity.} To date, the main success story for graph sketching has been  about edge connectivity, i.e., estimating how many edges need to be removed to disconnect the graph, and estimating the size of cuts. In this paper we present the first dynamic graph stream algorithms for vertex connectivity, i.e., estimating how many \emph{vertices} need to be removed to disconnect the graph. While it can be shown that edge connectivity is an upper bound for vertex connectivity, the vertex connectivity of a graph can be much smaller. Furthermore, the combinatorial structure relevant to both quantities is very different. For example, edge-connectivity is transitive\footnote{If it takes at least $ k$ edge deletions to disconnect $u$ and $v$ and it takes at least $ k$ edge deletions to disconnect $v$ and $w$, then it takes at least $ k$ edge deletions to disconnect $u$ and $w$.} whereas vertex-connectivity is not. A celebrated result by Karger \cite{karger1994} bounds the number of near minimum cuts whereas no analogous bound is known for vertex removal.  Feige et al.~\cite{FeigeHL05} discuss issues that arise specific to vertex connectivity in the context of approximation algorithms and embeddings.
+
+
+In Section \ref{sec:vertex}, we present two sketch-based algorithms for vertex connectivity. The first algorithm uses $O(kn\polylog n)$ space and constructs a data structure such that, at the end of the stream, it is possible to test whether the removal of a queried set of at most $k$ vertices would disconnect the graph. We  prove that this algorithm is optimal in terms of its space use. The second algorithm estimates the vertex connectivity up to a  $(1+\epsilon)$ factor using $O(\epsilon^{-1} kn\polylog n)$ space where $k$ is an upper bound on the vertex connectivity. 
+
+No stream algorithms were previously known that supported both edge insertions and deletions. Existing approaches either use $\Omega(n^2)$ space \cite{Sankowski07} or only handle insertions \cite{EppsteinGIN97}. With only insertions, Eppstein et al.~\cite{EppsteinGIN97} proved that $O(kn \polylog n)$ space was sufficient. Their algorithm drops an inserted edge $\{u,v\}$ iff there already exists $k$ vertex-disjoint paths between $u$ and $v$ amongst the edges stored thus far. Such an algorithm fails in the presence of edge deletions since some of the vertex disjoint paths that existed when an edge was ignored need not exist if edges are subsequently deleted.
+
+\pparagraph{Graph Reconstruction.} Our next result relates to reconstructing graphs rather than estimating properties of the graph. Becker et al.~\cite{BeckerMNRST11} show that is possible to reconstruct a $d$-degenerate graph given an $O(d \polylog n)$ size sketch of each row of the adjacency matrix of the graph. In Section \ref{sec:recon}, we define the  $d$-cut-degeneracy and show that the strictly larger class of graphs that satisfy this property can also be reconstructed given an $O(d \polylog n)$-size sketch of each row. Moreover, even if the graph is not $d$-cut-degenerate we show that we can find all edges with a certain connectivity property. This will be an integral part of our algorithm for hypergraph sparsification. For this purpose, we also prove the first dynamic graph stream algorithms for hypergraph connectivity in this section. We also extend the vertex connectivity results to hypergraphs.
+
+
+\pparagraph{Hypergraph Sparsification.}
+Hypergraph sparsification is a natural extension of graph sparsification. Given a hypergraph, the goal is to find a sparse weighted subgraph such that the weight of every cut in the subgraph is within a $(1+\epsilon)$ factor of the weight of the corresponding cut in the original hypergraph. 
+Estimating hypergraph cuts has applications in video object segmentation \cite{HuangLM09}, network security analysis \cite{Yamaguchi14},  load balancing in parallel computing \cite{CatalyurekBDBHR09}, and
+modelling communication in parallel sparse-martix vector multiplication 
+\cite{CatalyurekA99}.
+
+Kogan and Krauthgamer \cite{KoganK14} recently presented the first stream algorithm for hypergraph sparsification in the insert-only model. In Section \ref{sec:hypesparsification}, we present the first algorithm that supports both edge insertions and deletions. The algorithm uses $O(n\polylog n)$ space assuming that size of the hyperedges is bounded by a  constant. This result is part of a growing body of work on processing hypergraphs in the data stream model\cite{SahaG09,EmekR14,RadhakrishnanS11,Sun13,KoganK14}. There are numerous challenges in extending previous work on graph sparsification \cite{AhnGM12b,AhnGM13,KapralovLMMS14,KapralovW14,GoelKP12} to hypergraph sparsification and we discuss these in Section \ref{sec:hypesparsification}. In the process of overcoming these challenges, we also identify a simpler approach for graph sparsification in the data stream model.
+
+\section{Models and Preliminaries}
+
+\pparagraph{Graphs Preliminaries.}
+A hypergraph is specified by a set of vertices $V=\{v_1, \ldots, v_n\}$ and a set of subsets of $V$ called hyperedges. In this paper we assume all hyperedges have cardinality at most $r$ for some constant $r$. The special case when all hyperedges have cardinality exactly two corresponds to the standard definition of a graph. All graphs and hypergraphs discussed in this paper will be undirected.
+It will be convenient to define the following notation: Let $\delta_G(S)$ be the set of hyperedges that cross the cut $(S,V\setminus S)$ in the hypergraph $G$ where we say a hyperedge $e$ crosses $(S,V\setminus S)$ if $e\cap S\neq \emptyset$ and $e\cap (V\setminus S)\neq \emptyset$. For any hyperedge $e$, define $\lambda_e(G)$ to be the minimum cardinality of a cut that includes $e$. A \emph{spanning graph} $H=(V,E)$ of a hypergraph $G=(V,E)$ is a subgraph such that  $|\delta_{H}(S)|\geq \min (1, |\delta_G(S)|)$ for every $S\subset V$.
+
+%Something about induced graphs and subgraphs on hypergraphs?
+
+
+\pparagraph{Linear Sketches and Applications.}
+All the algorithms presented in this paper use linear sketches.
+
+\begin{definition}[Linear Sketches]
+A \emph{linear measurement} of a hypergraph on $n$ vertices is defined by a set of coefficients $\{c_e : e\in \P_r(V)\}$ where $\P_r(V)$ is the set of all subsets of $V$ of size at most $r$. Given a hypergraph $G=(V,E)$, the evaluation of this measurement is defined as 
+$\sum_{e\in E} c_e$.
+A \emph{sketch} is a collection of (non-adaptive) linear measurements. The cardinality of this collection is referred to as the \emph{size} of the sketch. We will assume that the magnitude of the coefficients $c_e$ is $\poly(n)$. We say a linear measurement is \emph{local} for node $v$ if the measurement only depends on hyper-edges incident to $v$, i.e., $c_e=0$ for all hyper-edges that do not include $v$. We say a sketch is \emph{vertex-based} if every linear measurement is local to some node.\end{definition}
+
+Linear sketches have long been used in the context of data stream models because it is possible to maintain a sketch of the stream incrementally. Specifically, if the next stream update is an insertion or deletion of an edge, we can update the sketch by simply adding or subtracting the appropriate set of coefficients.
+Sketches are also useful in distributed settings. In particular, the model considered by Becker et al.~\cite{BeckerMNRST11} was as follows: suppose there are $n+1$ players $P_1, \ldots, P_n$ and $Q$. The input for player $P_i$ is the set of (hyper-)edges that include the $i$th vertex of a graph $G$. Player $Q$ wants to compute something about this graph such as determining whether $G$ connected. To enable this, each of the players $P_1, \ldots, P_n$  simultaneously sends a message about their input to $Q$ such that the set of these $n$ messages contains sufficient information to complete $Q$'s computation. In the case of randomized protocols, we assume that all players have access to public random bits. The goal is to minimize the maximum length of the $n$ messages that are sent to $Q$. If a vertex-based sketch exists for the problem under consideration, then for each linear measurement, there is a single player that can evaluate this message and send it to $Q$.
+
+%\begin{definition}[Sketch and vertex-based Sketch]
+%
+%\end{definition}
+
+\section{Vertex Connectivity}\label{sec:vertex}
+
+A natural approach to determining vertex connectivity could be to try to mimic the algorithm of Cheriyan et al.~\cite{CheriyanKT93}. They showed that the union of $k$ disjoint ``scan first search trees" (a generalization of breadth-first search trees) can be used to determine if a graph is $k$ vertex connected. A similar approach worked in data stream model for the case of edge-connectivity (which we discuss in further detail in the next section) but in that case the trees to be constructed could be arbitrary. Unfortunately, we can show (see appendix) that any algorithm for constructing a scan-first search tree in the data stream model requires $\Omega(n^2)$ space even when there are no edge deletions.
+
+%
+%%The same difficulty arises in the context of proving that sparse certificates of vertex connectivity exist. 
+%It is not very difficult to show that the union of $k$ edge disjoint spanning trees prove that a graph is $k$ edge connected -- proving something similar in the context of vertex $k$-connectivity  is nontrivial. It was first shown by Cheriyan et al. \cite{CheriyanKT93} that the union of $k$ ``scan first search'' trees (where each such tree is constructed on the residual graph defined by the removal of the edges in the previous trees) provide a sparse certificate of vertex $k$-connectivity with $O(kn)$ edges. 
+
+%Breadth first search trees are scan first search trees, but there exists scan first search trees that not breadth first search trees. This fact is highlighted and exploited in \cite{CheriyanKT93} from the perspective of parallel algorithms -- while the construction of breadth first is difficult to achieve in a parallel setting; the construction of scan first trees was shown to be much easier. However from the perspective of space complexity (the parallel algorithms in \cite{CheriyanKT93} used shared memory) the construction of a single scan first tree under edge insertions only requires $\Omega(n^2)$ space. 
+%
+%
+
+To avoid this issue, we take a different approach based on finding arbitrary spanning trees for the induced graph on a random subset of vertices.\footnote{We note that the idea of subsampling vertices
+% in the context of vertex connectivity 
+ was recently explored by Censor-Hillel et al.~\cite{Censor-HillelGK14,Censor-HillelGGHK15}. They showed that if each vertex of a $k$-vertex-connected graph is subsampled with probability $p=\Omega(\sqrt{\log n / k})$ then the resulting graph has vertex connectivity $\Omega(kp^2)$. We do not make use of this result in our work as it does not lead to an approximation factor better than $\sqrt{k}$.
+} We will use the following result for finding these spanning trees.
+
+\begin{theorem}[Ahn et al.~\cite{AhnGM12a}]\label{thm:spantree}
+For a graph on $n$ vertices, there exists a vertex-based sketch of size $O(n\polylog n)$ from which we can construct a spanning forest with high probability.
+\end{theorem}
+
+%roughly $1/\sqrt{k}$ is sufficient to distinguish the cases when the vertex connectivity is at least $k$ from the case when the vertex connectivity is at most $\sqrt k$. 
+%Combining that analysis with the above theorem leads to a $O(n {k}^{-1} \polylog n)$ space algorithm. 
+
+Note that in this section we restrict our attention to graphs rather than hypergraphs. However, in the next section we will explain how the vertex connectivity results extend to hypergraphs.
+
+\subsection{Warm-Up: Vertex Connectivity Queries }
+
+For $i=1,2,\ldots, R:=16\cdot k^2 \ln n$, let $G_i$ be a graph formed by deleting each vertex in $G$ with probability $1-1/k$. Let $T_i$ be an arbitrary spanning forest of $G_i$ and define $H=T_1\cup T_2 \cup \ldots \cup T_R$.
+
+\begin{lemma}
+Let $S$ be an arbitrary collection of at most $k$ vertices. With high probability, $H\setminus S$ is connected iff $G\setminus S$ is connected.
+\end{lemma}
+
+\begin{proof}
+First we note that $H$ has the same set of vertices as $G$ with high probability. This follows because the probability a given vertex is not in $H$ is $(1-1/k)^R\leq \exp(-16\cdot k \cdot \ln n)=n^{-16k}$ and hence by an application of the union bound, all vertices in $G$ are also in $H$ with probability at least $1-n^{-(16k-1)}$. Then since $H$ is a subgraph of $G$, then $G\setminus S$ disconnected implies  $H\setminus S$ disconnected. It remains to prove that $G\setminus S$ connected implies $H\setminus S$ connected.
+
+Assume $G\setminus S$ is connected. Consider an arbitrary pair of vertices $s,t \not \in S$ and let 
+$s=v_0\rightarrow v_1 \rightarrow v_2 \rightarrow \ldots \rightarrow v_\ell=t$
+be a  path between $s$ and $t$ in $G\setminus S$.
+Then note that there is a path between $v_i$ and $v_{i+1}$ in $H\setminus S$ if there exists $G_i$ such that $G_i\cap S=\emptyset$ and $v_i,v_{i+1}\in H\setminus S$. This follows because if $\{v_i,v_{i+1}\}\in G_i$ and $G_i\cap S=\emptyset$ then $T_i\setminus S$ either contains $\{v_i,v_j\}$ or a path between between $v_i$ and $v_j$. Hence,
+\[
+\prob{\mbox{$v_i$ and $v_{i+1}$ are connected in $T_i\setminus S$}} \geq 1/k^2 (1-1/k)^k
+\]
+and therefore 
+\begin{eqnarray*}
+& & \prob{\mbox{$v_i$ and $v_{i+1}$ are disconnected in $T_i\setminus S$ for all $i\in [R]$}} \\
+&\leq & (1-1/k^2 (1-1/k)^k)^R 
+%\\
+%&\leq &\exp(-R/k^2 (1-1/k)^k)
+\leq 1/n^4 \ .
+\end{eqnarray*}
+Taking the union bound over all $\ell <n$ pairs $\{v_i, v_{i+1}\}$, we conclude that 
+$s$ and $t$ are connected in $H\setminus S$ with probability at least $1-1/n^3$. By applying the union bound again, with probability at least $1-1/n^2$, $s$ is connected in $H\setminus S$ to all other vertices.
+\end{proof}
+
+Our algorithm constructs a spanning forest for each of $G_1, \ldots, G_R$ using the algorithm referenced in Theorem \ref{thm:spantree}. Note that since each $G_i$ has $O(n/k)$ vertices with high probability, we can construct these $R$ trees in $R\times O(n/k \polylog n)=O(nk\polylog n)$ space. This gives us the following theorem.
+
+\begin{theorem}
+There is a sketch-based dynamic graph algorithm that uses $O(kn \polylog n)$ space to test whether a set of vertices $S$ of size at most $k$ disconnects the graph. The query set $S$ is specified at the end of the stream.
+\end{theorem}
+
+We next prove that the above query algorithm is space-optimal.
+
+\begin{theorem}
+Any dynamic graph algorithm that allows us to test, with probability at least $3/4$, whether a queried set of at most $k$ vertices disconnects the graph requires $\Omega(kn)$ space.
+\end{theorem}
+\begin{proof}
+The proof is by a reduction from the communication problem of indexing \cite{Ablayev96}. Suppose Alice has a binary string $x\in \{0,1\}^{(k+1)\times n}$ indexed by $[k+1]\times [n]$ and Bob wants to compute $x_{i,j}$ for some  index $(i,j)\in [k+1]\times [n]$ that is unknown to Alice. This requires $\Omega(nk)$ bits to be communicated from Alice to Bob if Bob is to be successful with probability at least $3/4$. Consider the protocol where the players create a bipartite graph on vertices $L\cup R$ where $L=\{l_1, \ldots, l_{k+1}\}$ and $R=\{r_1, \ldots, r_n\}$. Alice adds edges $\{l_i,r_j\}$ for all pairs $(i,j)$ such that $x_{i,j}=1$. 
+Alice runs the algorithm and sends the state to Bob. Bob adds edges $\{r_\ell,r_{\ell'}\}$ for all $\ell,\ell'\neq j$ and deletes all vertices in $L$ except $l_i$. Now $r_j$ is connected to the rest of the graph iff the $x_{i,j}=1$.
+\end{proof}
+
+
+\subsection{Vertex Connectivity}
+
+For $i=1,2,\ldots, R:=160\cdot k^2 \epsilon^{-1}  \ln n$, let $G_i$ be a graph formed by deleting each vertex in $G$ with probability $1-1/k$. As before, let $T_i$ be an arbitrary spanning forest of $G_i$ and define $H=T_1\cup T_2 \cup \ldots \cup T_R$.
+
+%Let 
+%Let $R=8\times k^2\epsilon^{-1} \ln n$.
+
+\begin{theorem}\label{thm:everyonesgonetosleep}
+Let $S$ be a subset of $V$ of size $k$. Consider any pair of vertices $u,v\in V\setminus S$ such that there are at least $(1+\epsilon)k$ vertex-disjoint paths between $u$ and $v$ in $G$. Then, 
+\[\prob{u \mbox{ and }v \mbox{ are connected in } G_S}\geq 1-4/n^{10k}\] 
+where $G_S=\cup_{i\in U(S)} G_i$ and $U(S)=\{i:G_i\cap S=\emptyset\}$ is the set of sampled graphs with no vertices in $S$. 
+\end{theorem}
+\begin{proof}
+We first argue that $|U(S)|$ is large with high probability. Then $\expec{|U(S)|}=(1-1/k)^{k} R \geq R/4$. By an application of the Chernoff bound:
+\[
+\prob{|U(S)|\leq 1/2\times R/4}\leq  e^{-1/4\times R/4 \times 1/3}<1/n^{10k} \ .
+\]
+In the rest of the proof we condition on event $|U(S)|\geq r:=R/8$.
+% and note that the set of $G_i$ such that $G_i\cap S=\emptyset$ are inpendent.
+
+Note that there are $t\geq \epsilon k$ vertex-disjoint paths between $u$ and $v$ in $G\setminus S$. Call these paths $P_1, \ldots, P_{t}$. For each $P_i$, let $a_i$ be the edge incident to $u$, let $c_i$ be the edge incident to $v$, and let $B_i$ be the remaining edges in $P_i$. Note that $a_i$ and $c_i$ need not be distinct and $B_i$ could be empty.
+
+\begin{claim} The followings three probabilities are each larger than $1-1/n^{10k}$:
+\[
+\prob{a_i \in G_S \mbox{ for at least $3t/4$ values of $i$}}\]
+\[\prob{B_i \subseteq G_S \mbox{ for at least $3t/4$ values of $i$}}\]
+\[\prob{c_i \in G_S \mbox{ for at least $3t/4$ values of $i$}} \ .
+\]
+%\begin{align*}
+%\prob{B_i \subseteq G_S \mbox{ for at least $3t/4$ values of $i$}}>& 1-1/n^{3k} \\
+%\prob{a_i \in G_S \mbox{ for at least $3t/4$ values of $i$}} >& 1-1/n^{3k}\\
+%\prob{c_i \in G_S \mbox{ for at least $3t/4$ values of $i$}}>& 1-1/n^{3k} \ .
+%\end{align*}
+% and
+%
+%\[\prob{\mbox{for at least $t/4$ values of $i\in [t]$}~,~ c_i\not \in G_S}<1/n^{2k} \ .\]
+\end{claim}
+\begin{proof}
+Each edge in $B_i$ is not present in $G_S$ with probability $(1-1/k^2)^{r}$. Hence, by the union bound,
+$\prob{B_i\not \subseteq G_S}\leq |B_i| (1-1/k^2)^{r}$.
+Also by the union bound,
+%\begin{eqnarray*}
+%\prob{B_i \not \subseteq G_S \mbox{ for more than $t/4$ values of $i$}}
+%&<&  {t\choose t/4} (n (1-1/k^2)^{r})^{t/4} \\
+%&<& e^{t \ln 2+(\ln n-r/k^2)t/4}<1/n^{2k} \ .
+%\end{eqnarray*}
+\begin{eqnarray*}
+& & \prob{B_i \not \subseteq G_S \mbox{ for more than $t/4$ values of $i$}}
+\\ &<&   {t\choose t/4} (n (1-1/k^2)^{r})^{t/4} \\
+&< &  e^{t \ln 2+(\ln n-r/k^2)t/4}<1/n^{10k} \ .
+\end{eqnarray*}
+
+The proofs for $a_i$ and $c_i$ are entirely symmetric so we just consider $a_i$. 
+Consider the set $U'(S)=U(S)\cap \{j: u\in G_j\}$. Note that for $j\in U'(S)$ we have
+$\prob{a_i\in G_j}=1/k$ and by the union bound,
+\begin{eqnarray*}
+& & \prob{a_i\not \in \cup_{j\in U'(S)}G_j \mbox{ for at least $t/4$ values of $i$}}\\
+& \leq & {t \choose t/4} (1-1/k)^{|U'(S)|  t/4} \\
+& \leq & 2^t \exp \left (\frac{-|U'(S)|  t}{(4k)}\right )
+%<1/n^{3k} 
+\ .
+\end{eqnarray*}
+
+%We next argue that $|U'(S)|$ is large with high probability. 
+%%We first argue that $s\in G_i$ for a large fraction of $i\in U(S)$ with high probability. 
+%By an application of the Chernoff bound,
+%\[
+%\prob{|U'(S)|\leq |U(S)|/(2k)}
+%%&=&
+%%\prob{\mbox{for at most $|U(S)|/(2k)$ values of $j\in U(S)$}~,~s\not \in G_j}\\
+%\leq  \exp(-1/4 \times |U(S)|/k \times 1/3)\]
+%%\end{eqnarray*}
+Let $E$ be the event that $|U'(S)|\leq |U(S)|/(2k)$. Then, by an application of the Chernoff bound:
+\begin{eqnarray*}
+& & \prob{a_i\not \in G_S \mbox{ for at least $t/4$ values of $i$}} \\
+& \leq &
+\prob{E}   \\
+& & + \prob{a_i\not \in \cup_{j\in U'(S)}G_j  \mbox{ for at least $t/4$ values of $i$} \mid \neg E} \\
+& \leq &
+\exp(-1/4 \times |U(S)|/k \times 1/3)   \\
+& & \quad + \prob{a_i\not \in \cup_{j\in U'(S)}G_j  \mbox{ for at least $t/4$ values of $i$} \mid \neg E} \\
+& \leq &
+\exp(-1/4 \times r/k \times 1/3) +2^t \exp(-r/(2k)\times  t/(4k)) \\
+&<&  1/n^{10k}\ .
+%& \leq &
+%e^{-1/4 \times |U(S)|/k \times 1/3} +2^t \exp(-|U'(S)|  t/(4k))
+\end{eqnarray*}
+\end{proof}
+It follows from the claim that there exists $i$ such that $P_i\in G_S$ (and therefore $u$ and $v$ are connected in $G_S$) with probability at least $1-3/n^{10k}$. The conditioning on $|U(S)|\geq r$ decreases this by another $1/n^{10k}$.
+\end{proof}
+
+\begin{corollary}
+If $G$ is $(1+\epsilon)k$-vertex-connected then $H$ is $k$-vertex-connected with high probability. If $H$ is  $k$-vertex connected then $G$ is $k$-vertex connected.
+% at least $1-1/n$.
+\end{corollary}
+\begin{proof}
+The first part of the corollary follows from Theorem \ref{thm:everyonesgonetosleep} by applying the union bound over all $O(n^k)$ subsets of size at most $k$ and $O(n^2)$ choices of $u$ and $v$. Note that $u$ and $v$  connected in $G_S$ implies $u$ and $v$ are connected in $H$ since $H$ includes a spanning forest of $G_S$. The second part  is implied by the fact $H$ is a subgraph of $G$.
+\end{proof}
+
+As in the previous section, our algorithm is simply to construct $H$ be  using the algorithm referenced in Theorem \ref{thm:spantree} to construct $T_1, \ldots, T_R$. We can then run any vertex connectivity algorithm on $H$ in post-processing. Since each $G_i$ has $O(n/k)$ vertices with high probability, we can construct these $R$ trees in $R\times O(n/k \cdot \polylog n)=O(nk\epsilon^{-1}\polylog n)$ space. This gives us the following theorem.
+
+\begin{theorem}
+There is a sketch-based dynamic graph algorithm that uses $O(kn\epsilon^{-1} \polylog n)$ space to distinguish $(1+\epsilon)k$-vertex connected graphs from $k$-connected graphs.
+\end{theorem}
+%
+%Applying the above algorithm with $\epsilon=1/k$ yields the following theorem.
+%
+%\begin{corollary}
+%Testing $k$-vertex connectivity is possible in $O(k^2 n \polylog n)$ space.
+%\end{corollary}
+%
+%
+
+
+
+\section{Reconstructing Hypergraphs}\label{sec:recon}
+
+We next present sketches for reconstructing cut-degenerate hypergraphs. Recall that a hypergraph is $d$-degenerate if all induced subgraphs have a vertex of degree at most $d$. Cut-degeneracy is defined as follows.
+
+\begin{definition}
+A hypergraph is \emph{$d$-cut-degenerate} if every induced subgraph has a cut of size at most $d$.
+\end{definition}
+
+The following lemma establishes that this is a strictly weaker property than $d$-degeneracy.
+
+\begin{lemma}
+Any hypergraph that is $d$-degenerate is also $d$-cut-degenerate. There exists graphs that are    $d$-cut-degenerate but not $d$-degenerate.
+\end{lemma}
+\begin{proof}
+Since the degree of a vertex $v$ is exactly the size of the cut $(\{v\},V\setminus \{v\})$ it is immediate that $d$-degeneracy implies $d$-cut-degeneracy. For an example that $d$-cut-degenerate does not imply it is $d$-degenerate consider the graph $G$ on eight vertices $\{v_1,v_2,v_3,v_4,u_1,u_2,u_3, u_4\}$ with edges $\{v_i,v_j\}, \{u_i,u_j\}$ for all $i,j$ except $i=1,j=4$ and edges $\{v_1,u_1\}$ and $\{v_4,u_4\}$. 
+Then $G$ has minimum degree 3 and is therefore not 2-degenerate while it is $2$-cut-degenerate.
+\end{proof}
+
+
+Becker et al.~\cite{BeckerMNRST11} showed how to reconstruct a $d$-degenerate graph in the simultaneous communication model if each player sends an $O(d\polylog n)$ bit message. We will show that it is also possible to reconstruct any $d$-cut-degenerate with the same message complexity. Even if the graph is not cut-degenerate, we show that is possible to reconstruct all edges with a certain connectivity property. We will subsequently use this fact in Section \ref{sec:hypesparsification}.
+
+
+\subsection{Skeletons for Hypergraphs}
+\label{sec:kskeletons}
+We first review the existing results on constructing $k$-skeletons \cite{AhnGM12a} that we will need for our new results. In doing so, we generalize the previous work to the case of hypergraphs.  In particular, this leads to the first dynamic graph algorithm for determining hypergraph connectivity.
+
+\begin{definition}[$k$-skeleton]
+Given a hypergraph $H=(V,E)$, a subgraph $H'=(V,E')$ is a \emph{$k$-skeleton} of $H$ if for any $S\subset V$, $|\delta_{H'}(S)| \geq \min (|\delta_{H}(S)|,k)$.
+\end{definition}
+
+In particular, any spanning graph is a $1$-skeleton and it can be shown that $F_1\cup F_2 \cup \ldots \cup F_k$ is  a $k$-skeleton \cite{AhnGM12a} of $G$ if $F_i$ is a spanning graph of $G\setminus   (\cup_{j=1}^{i-1} F_{j} )$. The next lemma establishes that given an arbitrary $k$-skeleton of a graph we can exactly determine the set of edges with $\lambda_e(G)\leq k-1$.
+
+\begin{lemma}\label{lem:skeletonlambda}
+Let $H$ be a $k$-skeleton of $G$ then $\lambda_e(H)\leq k-1$ iff $\lambda_e(G)\leq k-1$.
+\end{lemma} 
+\begin{proof}
+Since $H$ is a subgraph $\lambda_e(H)\leq \lambda_e(G)$ and hence $\lambda_e(G)\leq k-1$ implies $\lambda_e(H)\leq k-1$. Using the fact that $H$ is a $k$-skeleton $\lambda_e(H)\geq \min(k,\lambda_e(G))$ and hence, if $  \lambda_e(H)\leq k-1$ it must be that $\lambda_e(G)\leq k-1$.
+\end{proof}
+
+%We present 
+%
+%We start with a simple algorithm for finding a spanning forest of a graph and then show how to emulate this algorithm via sketches.
+
+%Of course this is a trivial algorithm! The challenge is to perform it via a set of simultaneous linear measurements.
+
+\pparagraph{Constructing Spanning Graphs.}
+For each vertex $v_i\in V$, define the vector $\veca^i\in \{-1,0,1,2, \ldots, r-1\}^d$ where $d=\sum_{i=2}^r {n\choose i}$ is the number of possible hyperedges of size at most $r$:
+% whose $\{j,k\}\in {[n]\choose 2}$ entry is defined as  
+ \[
+  \veca^i_{e}=
+\begin{cases}
+   |e|-1     & \mbox{if } i=\min e \mbox{ and } e \in E \\
+   -1     & \mbox{if } i\in e\setminus \min e  \mbox{ and }  e \in E \\
+   0      & \mbox{otherwise}
+\end{cases}
+ \]
+ where $e$ ranges over all subsets of $V$ of size between $2$ and $r$ and $\min e$ denotes the smallest ID of a node in $e$.
+Observe that these vectors have the property that
+%. First note that the support of $\veca_i$ corresponds  exactly to the set of neighbors of $v_i$, i.e., $\support(\veca_i)=\{(i,j):v_j\in \Gamma(v_i)\}$.
+%Furthermore, 
+for any subset of vertices $\{v_i\}_{i\in S}$, the non-zero entries of $\sum_{i\in S} \veca^i$ correspond exactly to $\delta(S)$. This follows because the only subsets of 
+\[\{|e|-1, \underbrace{-1, -1, \ldots, -1}_{|e|-1}\}\]
+that sum to zero are the empty set and the entire set. Hence, the $e$-th coordinate of $\sum_{i\in S} \veca^i$ is zero iff either $e\not \in E$ or $e\subset S$ or $e\subset V\setminus S$.
+
+The rest of algorithm proceeds exactly as in the case of (non-hyper) graphs \cite{AhnGM12a} and a reader that is very familiar with the previous work should feel free to skip the remainder of Section \ref{sec:kskeletons}. We construct the sketches $M\veca^1,  \ldots, M\veca^n$ 
+where $M$ is chosen according to a distribution over matrices $\reals^{k \times d}$ where $k=\polylog (d)$. The distribution has the property that for any $\veca\in \reals^d$, it is possible to determine the index of a non-zero entry of $\veca$ given $M\veca$ with probability $1-1/\poly(n)$. Such as distribution is known to exist by a result of Jowhari et al.~\cite{JowhariST11}.
+%
+%
+%We next use the following result by Jowhari et al.~\cite{JowhariST11}:
+%%\begin{theorem}%[Jowhari et al.~\cite{JowhariST11}]
+%There exists a distribution $\mu$ over  $\reals^{(\polylog d) \times d}$ matrices such that for any $\veca \in \reals^d$, the index of a non-zero entry of $\veca$ can be determined given $M\veca$ with probability $1-1/\poly(n)$ where $M\sim \mu$. 
+%Note that we do not get to specify which non-zero entry is found if there is more than one.
+%\end{theorem}
+%As mentioned earlier, the goal of $\ell_0$-sampling is to take a non-zero vector $\bold{x}\in \reals^{d}$ and return a sample $j$ where
+%\[
+%\Pr_r[\mbox{sample equals $j$}] =
+%\begin{cases}
+%\frac{1}{|F_0(\vecx)|} & \mbox{ if } \vecx_j\neq 0\\
+%0 & \mbox{ if } \vecx_j= 0
+%\end{cases} \ .
+%\]
+Given $M\veca^1,  \ldots, M\veca^n$ we can find an edge across an arbitrary cut $(S,V\setminus S)$. To do this, we compute $\sum_{i\in S} M\veca^i=M( \sum_{i\in S} \veca^i)$. We can then determine the index of a non-zero entry of $\sum_{i\in S} \veca^i$ which corresponds to an element of $\delta(S)$ as required. It may appear that to test connectivity we need to test all $2^{n-1}-1$ possible cuts. Since the failure probability for each cut is only inverse polynomial in $n$ this would be problematic. However, it is possible to be more efficient and only test $O(n)$ cuts. See Ahn et al.~\cite{AhnGM12a} for details.
+
+\begin{theorem}[Spanning Graph Sketches]
+There exists a vertex-based sketch $\alg$ of size $O(n\polylog n)$ such that we can find a spanning graph of a hypergraph $G$ from $\alg(G)$ with high probability.
+\end{theorem}
+
+Note the above theorem can be substituted for Theorem \ref{thm:spantree} and the resulting algorithms for vertex connectivity go through for hypergraphs unchanged. 
+%
+%A useful feature of existing work \cite{JowhariST11} on $\ell_0$ sampling is that it can be performed via linear projections, i.e., for any  string $r$ there exists $M_r\in \reals^{k\times d}$ such that the sample can be reconstructed  from $M_r \vecx$. For the process to be successful with constant probability $k=O(\log^2 n)$ suffices. Consequently, given $M_r\vecx$ and $M_r \vecy$ we have enough information to determine a random sample from the set $\{i: x_i+y_i\neq 0\}$ since 
+%\[M_r(\vecx+\vecy)=M_r \vecx+M_r \vecy \ .\]
+
+%
+%For example, for the graph in Figure~\ref{fig:example}, we have
+%\[
+%\begin{array}{rccccccl}  
+%\veca^1 ~=~ (\! & 1 & 1 & 0& 0& 0 & 0&\!   ) \\
+%\veca^2 ~=~ (\!  & -1 & 0& 0& 1& 0 & 0&\!  ) \\
+%\veca^3 ~=~ (\!  & 0 & -1 & 0& -1 & 0 & 1&\!  ) \\
+%\veca^4 ~=~ (\!  & 0 & 0 & 0 & 0 & 0 & -1 &\!  ) 
+%\end{array}
+%\]
+%where the entries correspond to the sets 
+%$\{1,2\}, $ $  \{1,3\}, $ $ \{1,4\}, $ $  \{2,3\}, $ $  \{2,4\}, $ $  \{3,4\}$ in that order. Note that the non-zero entries of 
+%\[
+%\begin{array}{rccccccl}  
+%\veca^1+\veca^2  ~=~ (\! & 0 & 1 & 0& 1& 0 & 0&\!   )
+%\end{array}
+%\]
+%correspond to $\{1,3\}$ and $\{2,3\}$ which are exactly the edges across the cut $(\{1,2\}, \{3,4\})$.
+
+%Given the carefully chosen ingredients, 
+ 
+\pparagraph{Constructing $k$-skeletons.}
+As mentioned above, it suffices to find $F_1, \ldots, F_k$ such that $F_i$ is a spanning graph of $G\setminus   (\cup_{j=1}^{i-1} F_{j} )$. 
+Do to this we use  $k$ independent spanning graph sketches $\alg^1(G), $ $ \alg^2(G), \ldots, $ $ \alg^k(G)$ as described in the previous section. We may construct $F_1$ from $\alg^1(G)$ because this is the functionality of a spanning graph sketch. Assuming we have already constructed $F_1, \ldots, F_{i-1}$ we can construct $F_i$ from:
+\[
+\alg^i(G-F_1-F_2\ldots - F_{i-1})=\alg^i(G)-\sum_{j=1}^{i-1} \alg^i(F_j) \ .
+\]
+
+
+\begin{theorem}[$k$-Skeleton Sketches]
+There exists a vertex-based sketch $\B$ of size $O(kn\polylog n)$ such that we can  find of a $k$-skeleton  a hypergraph $G$ from $\B(G)$ with high probability.
+\end{theorem}
+
+\subsection{Beyond $k$-Skeletons}
+\label{sec:fleshingk}
+
+One might be tempted as ask whether it was necessary to use $k$ independent spanning graph sketches $\alg^1, \ldots, \alg^k$  rather that reuse a single sketch $\alg$. If each application of the sketch $\alg$ fails to return a spanning graph with probability $\delta$, one might hope to use the union bound to argue that the probability that $\alg$ fails on any of the inputs $G, G-F_1, G-F_1-F_2, \ldots, G-F_1-\ldots -F_{k-1}$ is at most $k\delta$. \emph{But this would not be a valid application of the union bound!} The union bound states that for any \emph{fixed} set of $t$  events $B_1, \ldots, B_t$, we  have $\prob{B_1\cup \ldots \cup B_t}\leq \sum_i \prob{B_i}$. The issue is that the events in the above example are not fixed, i.e., they can not be specified a priori, since spanning graph $F_i$ is determined by the randomness in the sketch.\footnote{Another way to see that using the same sketch cannot work is that if it were possible to repeatedly remove each spanning graph from the sketch of the original graph, we would be able to reconstruct the entire graph using only a sketch of size $O(n \polylog n)$. Clearly this is not possible because it requires at $\Omega(n^2)$ bits to specify an arbitrary graph on $n$ vertices.} We belabor this point because, while the union bound was not applicable in the above case,  we will need it to prove our next result in a situation that is only subtly different and yet the union bound \emph{is} valid.
+
+\subsubsection{Finding the light edges}
+Given a graph $G=(V,E)$ and a postive integer $k$, recursively define 
+\[E_i=\{e\in E: \lambda_e(G\setminus \bigcup_{j=1}^{i-1} E_i) \leq k\}\] and denote the union of these sets as:
+\[\light_k(G)=\bigcup_{i\geq 1} E_i\ .\]
+Note that if $G$ is $d$ cut-degenerate then $\light_d(G)=E$. Furthermore, there is at most $n$ values of $i$ such that $E_i$ is non-empty since removing each non-empty set $E_i$ from the graph increases the number of connected components.
+
+Suppose $\B(G)$ is a sketch that returns an arbitrary $(k+1)$-skeleton of $G$ with failure probability $\delta=1/\poly(n)$. Then, since $E_1, E_2,\ldots, E_n$ are sets defined solely by the input graph (and not any randomness in a sketch) we can specify the fixed events 
+\[
+\begin{split}
+B_i=\mbox{``We fail to return a $(k+1)$-skeleton sketch of } \\
+\mbox{$G-E_1-\ldots -E_i$ given $\B(G-E_1-\ldots -E_i)$"}
+\end{split}\]
+and therefore use the union bound to establish that the probability that we find a $(k+1)$-skeleton of each of the relevant graphs with failure probability at most $n\delta=1/\poly(n)$.
+
+We can therefore find the sets $E_1, E_2, \ldots, E_n$ as follows. Let
+$S_i$ be an arbitrary $(k+1)$ skeleton of $G-E_1-\ldots E_{i-1}$. Assuming we have already determined $E_1, \ldots, E_{i-1}$, we can find $S_i$ using:
+\[
+\B(G-E_1-E_2\ldots - E_{i-1})=\B(G)-\sum_{j=1}^{i-1} \B(E_j) \ .
+\]
+Then, by appealing to Lemma~\ref{lem:skeletonlambda}, we know that we can then uniquely determine $E_i$ given $S_i$.
+
+\begin{theorem}
+There exists a vertex-based sketch of size $\tilde{O}(kn)$ from which  $\light_k(G)$ can be reconstructed for any hypergraph $G$. 
+In the case of a $k$-cut-degenerate graph, this is the entire graph.
+\end{theorem}
+
+\subsubsection{What are the light edges?}
+In this section, we restrict our attention to graphs rather than hypergraphs and show that the set of edges in $\light_k(G)$ can be defined in terms of the notion of \emph{strong connectivity} introduced by Bencz{\'u}r and Karger \cite{BenczurK96}. 
+
+
+\begin{lemma} $\light_k(G)=\{e:k_e\leq k\}$ where $k_{\{u,v\}}$ is the maximum $k$ such that there is a set $S\subset V$ including $u$ and $v$ such that the induced graph on $S$ is $k$-edge-connected.
+\end{lemma}
+\begin{proof}
+Define $t_e$ to be the minimum value of $k$ such that $e\in  \light_k(G)$. We  prove that $t_e=k_e$ and the result  follows.
+To show $k_e \geq t_e$ suppose $t_e = t$ and then note that $e$ survives when we recursively remove edges with edge connectivity $t-1$. But the remaining components in this graph are at least $(t-1)+1=t$ connected so $k_e\geq t$.
+To show that $k_e\leq t_e$, suppose $k_e=k$. Then there exists a vertex induced subgraph $H$ containing $e$ that is $k$-connected. But when we recursively remove edges with edge connectivity at most $k-1$ then no edge in $H$ can be removed. Hence, $t_e> (k-1)$ and so $t_e\geq k$.
+\end{proof}
+
+\section{Hypergraph Sparsification}
+\label{sec:hypesparsification}
+
+In this final section, we present a vertex-based sketch for constructing a sparsifier of a hypergraph. This yields the first dynamic graph stream algorithm for constructing a sparsifier of a hypergraph.  As an added bonus, our approach gives an algorithm and analysis that is significantly simpler than previous work on the specific case of graph sparsification \cite{AhnGM12b,GoelKP12}.
+% In particular, our proofs are almost entirely self-contained and does not 
+
+
+\begin{definition}[Hypergraph Sparsifier]
+A weighted subgraph $H=(V,E',w)$ of a hypergraph $G=(V,E)$ is a \emph{sparsfier} if for all $S\subset V$,
+$
+\sum_{e\in \delta_H(S)} w(e) =(1\pm \epsilon) | \delta_G(S) |$.  
+\end{definition}
+
+Previous approaches to sparsification in the dynamic stream model relied on work by Fung et al.~\cite{FungHHP11}. To construct a \emph{graph} sparsifier, they showed that it was sufficient to independently sample every edge in the graph with probability $O(\epsilon^{-2} \lambda_e^{-1} \log n)$. Using their work required coopting their machinery and modifying it appropriately (e.g., replacing Chernoff arguments with careful Martingale arguments). Another downside to the previous approach is that the Fung et al.~result  does not seem to extend to the case of hypergraphs.\footnote{For the reader familiar with  Fung et al.~\cite{FungHHP11}, the issue is finding a suitable definition of cut-projection for hypergraphs and then proving a bound on the number of distinct cut-projections.}
+
+Using our new-found ability (see the previous section) to find  the entire set of edges that are not $k$-strong, we present an algorithm that a) has a simpler, and almost self-contained, analysis and b) extends to hypergraphs. Our approach is closer in spirit to Bencz{\'u}r and Karger's original work on sparsification \cite{BenczurK96} which in turn is based on the following result by Karger \cite{Karger94}: if we sample each edge with probability $p\geq p^* =c \epsilon^{-2} \lambda^{-1} \log n$ where $\lambda$ is the cardinality of the minimum cut and $c\geq 0$ is some constant, and weight the sampled edges by $1/p$ then the resulting graph is a sparsifier with high probability.
+
+The idea behind our algorithm is  as follows. For a hypergraph $G$, if we remove the hyperedges $\light_k(G)$ where $k=2 c \epsilon^{-2}\log n$, then every connected component in the remaining hypergraph has minimum cut of size greater than $2 c \epsilon^{-2}\log n$. Hence, for each of these components $p^*\leq 1/2$. Therefore, the graph formed by sampling the hyperedges in $G\setminus \light_k(G)$ with probability 1/2 (and doubling the weight of sampled hyperedges) and adding the set of hyperedges in $\light_k(G)$ with unit weights is a sparsifier of $G$. We then repeat this process until there are no hyperedges left to sample. 
+
+\pparagraph{Algorithm.}
+\begin{enumerate}
+\item Generate a series of graphs $G_0, G_1, G_2\ldots $ where $G_i$ is formed by deleting each hyperedge in $G_{i-1}$ independently with probability 1/2 and $G_0=G$.
+\item For $i=0,1,2,\ldots, \ell=3\log n$:
+\begin{enumerate}
+\item Let $F_i=\light_k(H_i)$ where $k=O(\epsilon^{-2} ( \log n + r))$ where 
+$H_i=G_i \setminus (F_0\cup F_1 \cup F_2 \cup \ldots \cup F_{i-1})$
+\end{enumerate}
+\item Return $\bigcup_{i=0}^\ell 2^i \cdot F_i $ where $2^i \cdot F_i$ is the set of hyperedges in $F_i$ where each is given weight $2^i$.
+\end{enumerate}
+
+\pparagraph{Analysis.} The following lemma uses an argument due to Karger \cite{karger1994} combined with a hypergraph cut counting result by Kogan and Krauthgamer \cite{KoganK14}.
+
+\begin{lemma}\label{lem:onestep}
+$2 H_{i+1} \cup F_i$ is a $(1+\epsilon)$-sparsifier for $H_i$.
+\end{lemma} 
+\begin{proof}
+It suffices to prove that $2 H_{i+1}$ is a $(1+\epsilon)$-sparsifier for $H_i\setminus F_i$. Furthermore, it suffices to consider each connected component of $H_i\setminus F_i$ separately. 
+
+Let $C$ be an arbitrary connected component of $H_i\setminus F_i$ and note that $C$ has a minimum cut of size at least $k$. Let $C'$ be the graph formed by deleting each hyperedge in $C$ with probability $1/2$. Consider a cut of size $t$ in $C$ and let $X$ be the number of hyperedges in this cut that are in $C'$. Then $\expec{X}=t/2$ and by an application of the Chernoff bound,
+$\prob{|X-t/2| \geq \epsilon t/2}\leq 2\exp(-\epsilon^2 t/6)
+$.
+
+%Kogan and Krauthgamer proved that  
+The number of cuts of size at most $t$ is $\exp(O(rt/k+ t/k \cdot \log n))$  by appealing to a result by Kogan and Krauthgamer \cite{KoganK14}. By an application of the union bound, the probability that there exists a cut of  size $t$ such that the number of hyperedges in corresponding cut in $C'$ is not $(1\pm \epsilon)t/2$ is at most 
+\[2\exp(-\epsilon^2 t/6) \cdot \exp(O(rt/k+ t/k \cdot \log n)) \ .\]
+This probability is less than $1/n^{10}$
+if $k\geq c\epsilon^{-2} (\log n + r)$ for some sufficiently large constant $c$. Hence, taking the union bound over all $t\geq k$ ensures that with probability at least $1/n^8$, for every cut in $C$, the fraction of edges in the corresponding cut in $C'$ is $(1\pm \epsilon)/2$.
+\end{proof}
+
+\begin{theorem}
+$\bigcup_{i=0}^\ell 2^i \cdot F_i $ is a $(1+\epsilon)^\ell$-sparsifier of $G$ where $\ell=3\log n$.
+\end{theorem}
+\begin{proof}
+The theorem follows by repeatedly applying Lemma \ref{lem:onestep}. Specifically,
+\begin{enumerate}
+\item $F_{\ell-1}$ is a $(1+\epsilon)$ sparsifier for $H_{\ell-1}$ since $H_\ell$ is the empty graph with high probability. 
+\item $2 H_{\ell-1} \cup F_{\ell-2}$ is a $(1+\epsilon)$-sparsifier for $H_{\ell-2}$ and so $2 F_{\ell-1} \cup F_{\ell-2}$ is a $(1+\epsilon)^2$-sparsifier for $H_{\ell-2}$
+\item $2 H_{\ell-2} \cup F_{\ell-3}$ is a $(1+\epsilon)$-sparsifier for $H_{\ell-3}$
+and so $4 F_{\ell-1} \cup 2 F_{\ell-2} \cup F_{\ell-3}$ is a $(1+\epsilon)^3$-sparsifier for $H_{\ell-3}$
+\end{enumerate}
+We continue in this way until we deduce $\bigcup_{i=0}^\ell 2^i \cdot F_i $ is a $(1+\epsilon)^\ell$-sparsifier for $H_0=G_0$.
+\end{proof}
+
+By re-parameterizing $\epsilon \leftarrow \epsilon/(2\ell)$ and using the sketches from Section \ref{sec:recon}, we establish the next theorem.
+\begin{theorem}There exists a vertex-based sketch of size $\tilde{O}(\epsilon^{-2} n)$ from which we can construct a $(1+\epsilon)$ hypergraph sparsifier.\end{theorem}
+
+%\section{Conclusions}
+
+\pparagraph{Acknowledgements.} We thank Jennifer Chayes for prompting us to investigate  hypergraph connectivity.
+%{ 
+%\bibliographystyle{abbrv} \bibliography{dynamic}
+%}
+%
+%\appendix
+%
+%\section{Sketches for Constructing $k$ Skeletons}
+%
+%\pparagraph{Basic Non-Sketch Algorithm}
+%The algorithm is based on the following simple $O(\log n)$ stage process. In the first stage, we find an arbitrary incident edge for each vertice. We then collapse each of the resulting connected components into a ``supernode". In each subsequent stage, we find an edge from every supervertex to another supervertex (if one exists) and collapse the connected components into new supervertices. It is not hard to argue that this process terminates after $O(\log n)$ stages and that the set of edges used to connect supervertices in the different stages include  a spanning forest of the graph. From this we can obviously deduce whether the graph is connected.
+%
+%The resulting algorithm for connectivity is relatively simple but makes use of linearity in an essential way:
+%\begin{enumerate}
+%\item {\em In a single pass, compute the sketches:} Choose $t=O(\log n)$ random strings $r_1, \ldots, r_t$ and construct the $\ell_0$-sampling projections $M_{r_j} \veca^i$ for $i\in [n]$, $j\in [t]$. Then,
+%\[\alg_i(\vecf^{v_i})  = \left (M_{r_1} \veca^i \right ) \circ \left (M_{r_2} \veca^i \right ) \ldots \circ \left (M_{r_t} \veca^i \right ) \ .\]
+%\item {\em In post-processing, emulate the original algorithm:}
+%\begin{enumerate}
+%\item Let $\hat{V}=V$ be the initial set of ``supervertices".
+%\item For $i= 1, \ldots, t$: for each supervertex $S\in \hat{V}$, use $\sum_{i\in S} M_{r_j} \veca^i=M_{r_j}(\sum_{i\in S} \veca^i)$ to sample an edge between $S$ and another supervertice. Collapse the connected supervertices to form a new set of supervertices. 
+%\end{enumerate}
+%\end{enumerate}
+%Since each sketch $\alg_i$ has dimension $O(\polylog n)$ and there are $n$ such sketches to be computed, the final connectivity algorithm uses $O(n \cdot \polylog n)$ space.
+%
+
+%\appendix
+
+
+%In the centralized RAM model, there exist alternate algorithms provided by Eppstein et al \cite{EppsteinGIN97} that construct a $O(kn)$ size certificates in the edge insertion model only.  
+%This algorithm accepts every incoming edge $(u,v)$ iff and only if there does not already exist $k$ vertex disjoint paths from $u$ to $v$. This theorem relies on a deep splitting off theorem of Mader to show that the number of edges never exceed $O(nk)$. However it is impossible to run the algorithm (meaningfully) in the dynamic setting where an edge used in the $k$ vertex disjoint paths from $u$ to $v$ may later be deleted, but we do not have have access to edge $(u,v)$ at that time. Therefore no previous algorithms answers $k$-vertex connectivity short of storing every edge in the graph in the dynamic setting.
+
+
+%\section{Scan-First Trees}
+
+
+%\end{document}

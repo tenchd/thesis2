@@ -1,0 +1,373 @@
+\section{Analysis}
+\label{sec:theory}
+
+
+%\newenvironment{claim}[1]{\par\noindent\underline{Claim:}\space#1}{}
+\newenvironment{claimproof}[1]{\par\noindent\underline{Proof:}\space#1}{\hfill $\blacksquare$}
+
+%\newtheorem{problem}{Problem}
+
+%% \theoremstyle{definition}
+%% \newtheorem{definition}{Definition}[section]
+
+%% \theoremstyle{theorem}
+%% \newtheorem{theorem}{Theorem}[section]
+
+%% \theoremstyle{lemma}
+%% \newtheorem{lemma}{Lemma}[section]
+
+\newcommand{\bigo}{\mathcal{O}}
+\newcommand{\page}{\pi}
+\newcommand{\str}{s}
+\newcommand{\node}{\mathit {v}}
+\newcommand{\W}{\mathcal {W}}
+\newcommand{\lp}{\left(}
+\newcommand{\rparen}{\right)}
+
+%%caveat required for lemma 4.4 added below.  run by andrew before finalizing
+This section shows that the \sm procedure described in
+\S\ref{sec:meshing-algorithm} comes with strong formal guarantees on
+the \textit{quality} of the meshing found along with bounds on its
+\textit{runtime}.  In situations where significant meshing
+opportunities exist (that is, when compaction is most desirable), \sm
+finds with high probability an approximation arbitrarily close to
+$1/2$ of the best possible meshing in $O\lp n/q\rparen$ time, where
+$n$ is the number of spans and $q$ is the global probability of two
+spans meshing.
+
+To formally establish these bounds on quality and runtime, we show
+that meshing can be interpreted as a graph problem, analyze its
+complexity (\S\ref{subsec:graph}), show that we can do nearly as well
+by solving an easier graph problem instead (\S\ref{subsec:matching}),
+and prove that \sm approximates this problem with high probability
+(\S\ref{subsec:analysis}).
+
+% \item{Introduce an easily-computable \emph{a priori} lower bound for the effect of meshing (\S\ref{subsec:lowerbound})}
+%\end{itemize}
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=.5\textwidth]{Chapters/mesh/figures/graph-diagram.pdf}
+%  \includegraphics[width=.33\textwidth]{figures/meshing_graph.pdf}
+%  \vspace{-2em}
+%\centering
+\caption{\textbf{An example meshing graph.}  Nodes correspond to the spans represented by the strings \texttt{01101000}, \texttt{01010000}, \texttt{00100110}, and \texttt{00010000}.  Edges connect meshable strings (corresponding to non-overlapping spans).}\label{fig:exmesh}
+\end{figure}
+
+
+\subsection{Formal Problem Definitions}
+\label{subsec:probdef}
+Since \Mesh{} segregates objects based on size, we can limit our
+analysis to compaction within a single size class without loss of
+generality. For our analysis, we represent spans as binary strings of
+length $b$, the maximum number of objects that the span can
+store. Each bit represents the allocation state of a single object. We
+represent each span $\page$ with string $\str$ such that $\str\lp
+i\rparen = 1$ if $\page$ has an object at offset $i$, and 0 otherwise.
+
+\begin{definition}
+We say  two  strings $\str_{1}, \str_{2}$ \em{mesh} iff $\sum_i \str_{1}\lp i\rparen \cdot \str_{2} \lp i \rparen = 0$. More generally, a set of binary strings are said to mesh if every pair of strings in this set mesh.
+%We say that k binary strings $\str_{1}, ... \str_{k}$ mesh iff $\sum_{j \in [1,k]} \str_{j}(i) \leq 1$ $\forall i \in [0,b-1]$.\\
+%Equivalently, k binary strings mesh if each each of said strings are pairwise meshable with all of the other strings.
+\end{definition}
+
+When we mesh $k$ spans together, the objects scattered across those
+$k$ spans are moved to a single span while retaining their offset from
+the start of the span. The remaining $k-1$ spans are no longer needed
+and are released to the operating system. We say that we ``release''
+$k-1$ \emph{strings} when we mesh $k$ strings together.  Since our
+goal is to empty as many physical spans as possible, we can
+characterize our theoretical problem as follows:
+
+\begin{problem}
+Given a multi-set of $n$ binary strings of length $b$, find a meshing
+that releases the maximum number of strings.
+\end{problem}
+
+% Note that the total number of strings released is equal to $n - \rho -
+% \phi$, where $\rho$ is the number of total meshes performed, and $\phi$
+% is the number of strings that remain unmeshed.
+
+\paragraph{A Formulation via Graphs:}
+\label{subsec:graph}
+
+We observe that an instance of the meshing problem, a string multi-set
+$S$, can naturally be expressed via a graph $G(S)$ where there is a
+node for every string in $S$ and an edge between two nodes iff the
+relevant strings can be meshed. Figure~\ref{fig:exmesh} illustrates
+this representation via an example.
+
+%Given , we construct a meshing graph $G_S$ as follows:\\
+%We add a node $\node$ to $G_S$ for each $\str \in S$.  We say node $\node$ represents $\str$.  For each %node pair $\node_1, \node_2$, we add edge $(\node_1, \node_2)$ iff $\node_1$ and $\node_2$ mesh.
+
+%This meshing problem is reducible to min clique cover (MCC), an NP-Complete problem.  We implicitly show %this reduction through a straightforward graph interpretation of the meshing problem.
+
+If a set of strings are meshable, then there is an edge between every
+pair of the corresponding nodes: the set of corresponding nodes is a
+\emph{clique}. We can therefore decompose the graph into $k$ disjoint
+cliques iff we can free $n-k$ strings in the meshing
+problem. Unfortunately, the problem of decomposing a graph into the
+minimum number of disjoint cliques (\textsc{MinCliqueCover}) is in
+general NP-hard. Worse, it cannot even be approximated up to a factor
+$m^{1-\epsilon}$ unless $P=NP$~\cite{zuckerman07}.
+
+While the meshing problem is reducible to {\textsc{MinCliqueCover}},
+we have not shown that the meshing problem is NP-Hard.  The meshing
+problem is indeed NP-hard for strings of arbitrary length, but in
+practice string length is proportional to span size, which is
+constant.
+
+\begin{theorem}\label{thm:polytime}
+The meshing problem for $S$, a multi-set of strings of constant length, is in $P$. %can be solved in polynomial time.
+%is in P
+%; equivalently, the min clique cover problem on meshing graphs generated from sets of strings of constant %length is in P.
+\end{theorem}
+
+\begin{proof}
+We assume without loss of generality that $S$ does not contain the
+all-zero string $\str_0$; if it does, since $\str_0$ can be meshed
+with any other string and so can always be released, we can solve the
+meshing problem for $S \setminus \str_0$ and then mesh each instance
+of $\str_0$ arbitrarily.
+
+Rather than reason about {\textsc{MinCliqueCover}} on a
+ meshing graph $G$, we consider the equivalent
+problem of coloring the complement graph $\bar{G}$ in which there is
+an edge between every pair of two nodes whose strings do not mesh. The nodes of $\bar{G}$ can be partitioned into at most $2^b-1$
+subsets $N_1 \ldots N_{2^b-1}$ such that all nodes in each
+$N_i$ represent the same string $\str_i$.  The induced subgraph of
+$N_i$ in $\bar{G}$ is a clique since all its nodes have a 1 in the same position and so cannot be pairwise meshed.  Further, all nodes in $N_i$ have the same set of neighbors.
+
+Since $N_i$ is a clique, at most one node in $N_i$ may be colored with
+any color.  Fix some coloring on $\bar{G}$.  Swapping the colors of
+two nodes in $N_i$ does not change the validity of the coloring since
+these nodes have the same neighbor set.  We can therefore
+unambiguously represent a valid coloring of $\bar{G}$ merely by
+indicating in which cliques each color appears.
+
+With $2^b$ cliques and a maximum of $n$ colors, there are at most $\lp
+n+1 \rparen ^{c}$ such colorings on the graph where $c=2^{2^b}$. This follows because each color used can be associated with a subset of $\{1, \ldots, 2^b\}$ corresponding to which of the cliques have node with this color; we call this subset a \emph{signature} and note there are $c$ possible signatures. A coloring can be therefore be associated with a multi-set of possible signatures where each signature has multiplicity between 0 and $n$; there are $(n+1)^c$ such multi-sets. This is polynomial in $n$ since $b$ is constant and hence $c$ is also constant. So we can simply check each coloring for validity (a coloring is valid iff no color appears in two cliques whose string representations mesh). The algorithm returns a valid coloring with the lowest number of colors from all valid colorings discovered.
+\end{proof}
+
+%Unfortunately, the exponent of $n$ runtime grows doubly exponentially in  $b$ and $b$ can be as large as 256.
+%Such a runtime,
+Note that the runtime of the above algorithm is at least exponential in the string length. While technically polynomial for constant string length, the running time of the above algorithm would obviously be prohibitive in practice and so we never employ it in \Mesh{}. Fortunately, as we show next, we can exploit the randomness in the strings to design a much faster algorithm.
+
+\subsection{Simplifying the Problem: From \textsc{MinCliqueCover} to \textsc{Matching}}
+\label{subsec:matching}
+We leverage \Mesh{}'s random allocation to simplify meshing; this random
+allocation implies a distribution over the graphs that exhibits useful
+structural properties. We first make the following important observation:
+
+\begin{observation}
+Conditioned on the occupancies of the strings, edges in the meshing graph  are not three-wise independent.
+\end{observation}
+
+To see that edges are not three-wise independent consider three random
+strings $s_1, s_2, s_3$ of length 4, each with exactly 2 ones. It is
+impossible for these strings to all mesh mutually since if we know that $s_1$ and $s_2$ mesh,
+and that $s_2$ and $s_3$ mesh, we know for certain that $s_1$ and
+$s_3$ cannot mesh. More generally, conditioning on $s_1$ and $s_2$
+meshing and $s_1$ and $s_3$ meshing decreases the probability that
+$s_1$ and $s_3$ mesh.
+%Note that even when we assume bits are 1 or 0
+%independently, edges are still not independent.
+%The existence of edge
+%($s_4,s_5$) is weak evidence of $s_5$'s low occupancy, increasing the
+%probability that edge ($s_5,s_6$) exists.
+Below, we quantify this
+effect to argue that we can mesh near-optimally by solving the much
+easier \textsc{Matching} problem on the meshing graph (i.e.,
+restricting our attention to finding cliques of size 2) instead of
+\textsc{MinCliqueCover}. Another consequence of the above observation is that we will not be able to appeal to  theoretical results on the standard model of random graphs, \emph{Erd\H{o}s-Renyi graphs}, in which  each possible edge is present with some fixed probability and the edges are fully independent. Instead we will need new algorithms and proofs that only require independence of acyclic collections of edges.
+
+\paragraph{Triangles and Larger Cliques are Uncommon.}
+Because of the dependencies across the edges present in a meshing
+graph, we can argue that \emph{triangles} (and hence also larger
+cliques) are relatively infrequent in the graph and certainly less
+frequent than one would expect were all edges independent.  For
+example, consider three strings $s_1, s_2, s_3\in \{0,1\}^b$ with
+occupancies $r_1, r_2,$ and $r_3$, respectively. The probability they
+mesh is
+\[
+{\binom{b-r_1}{r_2}} \big / {\binom{b}{r_2}} \times {\binom{b-r_{1}-r_2 }{r_3}} \big / {\binom{b}{r_3}} \ . \]
+
+This value is significantly less than would have been the case if the
+events corresponding to pairs of strings being meshable were
+independent.
+%In most practical cases, we will not be interested in meshing strings with low occupancy --- it is often better just to wait until %the last objects on these spans are freed.  For higher occupancies, the expected number of triangles is quite low.
+For instance, if $b = 32, r_1=r_2=r_3 = 10$, this probability is so
+low that even if there were $1000$ strings, the expected number of
+triangles would be less than 2. In contrast, had all meshes been
+independent, with the same parameters, there would have been $167$ triangles.
+
+% \paragraph{We Can Restrict Our Attention to Matching.}
+\begin{comment}
+The above analysis leads us to conclude that, since there are
+relatively few triangles in meshing graphs, we can achieve almost the
+full benefits of solving \textsc{MinCliqueCover} by only solving
+\textsc{Matching}.
+\end{comment}
+
+The above analysis suggests that we can focus on finding only cliques
+of size 2, thereby solving \textsc{Matching} instead of
+\textsc{MinCliqueCover}. The evaluation in
+Section~\ref{sec:evaluation} vindicates this approach, and we show a
+strong accuracy guarantee for \textsc{Matching} below.
+% We also verify this empirically in the Appendix.
+
+\subsection{Theoretical Guarantees}
+\label{subsec:analysis}
+Since we need to perform meshing at runtime, it is essential that our
+algorithm for finding strings to mesh be as efficient as possible. It
+would be far too costly in both time and memory overhead to actually
+construct the meshing graph and run an existing matching algorithm on
+it. Instead, the \sm algorithm (shown in Figure \ref{fig:meshalg})
+performs meshing without the need for explicitly constructing the
+meshing graph.
+
+For further efficiency, we need to constrain the value of the
+parameter $t$, which controls \Mesh{}'s space-time tradeoff. If $t$
+were set as large as $n$, then \sm could, in the worst case,
+exhaustively search all pairs of spans between the left and right
+sets: a total of $n^2/4$ probes.  In practice, we want to choose a
+significantly smaller value for $t$ so that \Mesh{} can always
+complete the meshing process quickly without the need to search all
+possible pairs of strings.
+
+
+\begin{lemma}
+Let $t=k/q$ where $k>1$ is some user defined parameter and $q$ is the global probability of two
+spans meshing. \sm finds a matching
+of size at least $n(1-e^{-2k})/4$ between the left and right span sets
+with probability approaching 1 as $n\geq 2k/q$ grows.
+\end{lemma}
+
+\begin{proof}
+%\sm in essence creates a bipartite meshing graph by splitting the span set in half.
+Let $S_l=\{v_1, v_2, \ldots v_{n/2}\}$ and $S_r=\{u_1,
+u_2, \ldots u_{n/2}\}$. Let $t=k/q$ where
+$k>1$ is some arbitrary constant. For $u_i\in S_l$ and $i \leq j \leq
+j+t$, we say $(u_i,v_j)$ is a \emph{good match} if all the following
+properties hold: (1) there is an edge between $u_i$ and $v_j$, (2)
+there are no edges between $u_i$ and $v_{j'}$ for $i\leq j'<j$, and
+(3) there are no edges between $u_{i'}$ and $v_{j}$ for $i< i'\leq j$.
+
+We observe that \sm finds any good match, although it may
+also find additional matches. It therefore suffices to consider only
+the number of good matches. The probability $(u_i,v_j)$ is a good
+match is $q(1-q)^{2(j-i)}$ by appealing to the fact that the collection of edges under consideration is acyclic. Hence, $\Pr(u_i \mbox{ has a good match})$
+is
+\begin{align*}
+r:= q \sum_{i=0}^{k/q-1} \lp 1-q\rparen ^{2i} = q \frac{1-(1-q)^{2k/q}}{1-(1-q)^2}
+% \geq q \frac{1-e^{-2k}}{2q-q^2}
+ > \frac{1-e^{-2k}}{2} \ .
+\end{align*}
+
+To analyze the number of good matches, define $X_i = 1$ iff $u_i$ has
+a good match. Then, $\sum_i X_i$ is the number of good matches. By
+linearity of expectation, the expected number of good matches is
+$rn/2$. We decompose $\sum_i X_i$ into \[Z_0+Z_1+\ldots + Z_{t-1} ~~\mbox{
+  where }~~ Z_{j} = \sum_{i\equiv j \bmod t} X_i \ .\] Since each
+$Z_j$ is a sum of $n/(2t)$ independent variables, by the Chernoff
+bound, $P\lp Z_j < \lp 1-\epsilon \rparen E[Z_j]\rparen \leq \exp\lp -
+\epsilon^2 r n/(4t)\rparen$.  By the union bound,
+$$P\lp X < \lp 1-\epsilon \rparen rn/2\rparen \leq t \exp\lp - \epsilon^2 r
+n/(4t)\rparen$$ and this becomes arbitrarily small as $n$ grows.
+\end{proof}
+
+In the worst case, the algorithm checks $nk/2q$ pairs. For our
+implementation of \Mesh, we use a static value of $t = 64$; this value
+enables the guarantees of Lemma 5.1 in cases where significant meshing
+is possible.  As Section~\ref{sec:evaluation} shows, this value for
+$t$ results in effective memory compaction with modest performance
+overhead.
+
+
+
+\begin{comment}
+
+\subsection{New Lower Bound for Maximum Matching Size}
+\label{subsec:lowerbound}
+
+In this section, we develop a bound for the size of the maximum matching in a graph that can easily be estimated in the context of meshing graphs.  As meshing may be costly to perform, this lower bound is useful as it can be used to predict the magnitude of compaction achievable before committing to the process.  In the case where little compaction is possible, it is often better not to try to mesh and instead conserve resources for other tasks. The quantity we introduce will always lower bound the size of  the maximum matching and will typically be relatively close to the size of the maximum matching.  For example, if we want to release 30\% of our active spans through meshing, but the bound suggests a release of less than 5\% is possible, we can infer that the maximum matching on the graph is small and meshing is currently not worth attempting.
+
+Our approach is based on extending a result by McGregor and Vorotnikova \cite{McGregorV16}. Let $\ndegree(u)$ be the degree of node $u$ in a graph. They considered the quantity
+$\sum_{e\in E} 1/\max(\ndegree(u),\ndegree(v))$
+and showed that it is at most a factor $3/2$ larger than the maximum matching in the graph and at most a factor $4$ smaller in the case of planar graphs. These bounds were tight.  For example, on a complete graph on three nodes, the quantity is $3/2$ while $M$ is 1. Meshing graphs are very unlikely to be planar but are likely be almost regular, i.e., most degrees are roughly similar.
+We need to extend the above bound such that we can guarantee that it never exceeds the size of the maximum matching while also being a good estimate for the graphs that are likely to arise as meshing graphs.
+
+%\begin{theorem}
+%Define $W(G)$ to be a fractional matching on graph $G = (V,E)$ such that $$W = \sum_{(u,v) \in E} \min\lp %\frac{1}{\ndegree\lp u\rparen },\frac{1}{\ndegree\lp v\rparen }\rparen $$
+%Then $W\leq \frac{3}{2} M$ where $M$ is the cardinality of the maximum matching on $G$.
+%If $G$ is bipartite, then $W \leq M$.
+%\end{theorem}
+
+%For general graphs, $W$ is not always a lower bound on the maximum matching (hence the need for the $\frac{3}{2}$ factor).  For example, on a complete graph on three nodes, $W$ is $\frac{3}{2}$ while $M$ is 1.
+
+%\begin{figure}[h]
+%\includegraphics[scale = .7]{figures/triangle_matching.png}
+%\centering
+%\caption{W is not a lower bound for the maximum matching on a triangle.}
+%\end{figure}
+One simple approach is to scale the above quantity by a factor of $2/3$,
+but this can result in a poor approximation for the size of the
+maximum matching for some graphs of interest. Instead, we take a more
+nuanced approach. Specifically, we prove the following theorem (proof omitted
+due to space constraints):
+%in the
+%Appendix:
+
+%While it is tight for this example, for larger non-bipartite graphs it seems like scaling $W$ down by %$\frac{2}{3}$ is overkill.  For instance, for a complete graph on an odd number of nodes k, $W = %{{k}\choose{2}} \frac{1}{k-1} = \frac{k}{2}$, while $M = \frac{k-1}{2}$.
+%The following theorem provides a tight lower bound for this example.
+
+
+\begin{theorem}
+\[
+\W=\sum_{e\in E} \frac{1}{\max(\ndegree(u), \ndegree(v))+I[\min(\ndegree(u),\ndegree(v))>1]}\leq M \ .
+\]
+%where $f(1,\cdot)=f(\cdot,1)=f(2,3)=f(3,2)=0$ and $f(\cdot,\cdot)=1$ otherwise. Then, $\sum_{e\in E} w_e \leq M$.
+% . Then, $\sum_{e\in E} w_e \leq M$.
+\end{theorem}
+
+\paragraph{A remark on estimating $\W$.}  If we wish to use this lower bound to decide whether to begin meshing by predicting the size of the maximum matching, we cannot compute it exactly because we do not know the degrees of the nodes in the graph.  However, we do know the degree distribution of the graph and so it is possible to calculate the expected value of $\W$.
+
+\end{comment}
+
+
+
+%\subsection{Summary}
+%\label{subsec:theorysummary}
+
+\subsection{Summary of Analytical Results}
+We show the problem of meshing is reducible to a graph problem,
+\textsc{MinCliqueCover}.  While solving this problem is infeasible, we
+show that probabilistically, we can do nearly as well by finding the
+maximum \textsc{Matching}, a much easier graph problem. We analyze our
+meshing algorithm as an approximation to the maximum matching on a
+random meshing graph, and argue that it succeeds with high
+probability.
+%Finally, we prove a new lower bound on the maximum matching for graphs
+%based on degree distribution.
+As a corollary of these results, \Mesh breaks the Robson
+bounds with high probability.
+
+%for a broad class of applications.
+%As long as programs do not alter
+%programs that do not alter their allocation behavior in response to
+%addresses the allocator returns.
+
+
+\begin{comment}
+  An adversary attempting to create an
+unmeshable memory state requires the capability to position objects at
+the same locations in multiple spans.  But an address-oblivious
+adversary can only do this with low probability - since allocation
+offsets within a span are random, the best it can do is free some
+objects from each span and hope that some of the remaining objects
+reside at the same offset.  Since objects are distributed uniformly at
+random from within spans, our analytical results hold and therefore
+there is either a large maximum matching on the resulting meshing
+graph (indicating significant compaction is possible) or spans are so
+full that fragmentation is not significant.
+\end{comment}

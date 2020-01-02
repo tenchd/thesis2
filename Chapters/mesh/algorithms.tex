@@ -1,0 +1,205 @@
+\section{Algorithms}
+\label{sec:algorithms}
+
+%This section provides an overview of \Mesh{}'s algorithms.
+%Section~\ref{sec:allocator} provides a detailed description of \Mesh's
+%implementation, while Section~\ref{sec:theory} presents a theoretical
+%analysis of its effectiveness.
+
+\Mesh{} comprises three main algorithmic components: allocation
+(\S\ref{sec:allocation-algorithm}), deallocation
+(\S\ref{sec:deallocation-algorithm}), and finding spans to mesh
+(\S\ref{sec:meshing-algorithm}). Unless otherwise noted and without
+loss of generality, all algorithms described here are per size class
+(within spans, all objects are same size).
+
+\subsection{Allocation}
+\label{sec:allocation-algorithm}
+% We want out allocator to enforce random spread of objects so that we can probabilistically guarantee meshing.  Also we want it to reuse memory when available.
+
+Allocation in \Mesh{} consists of two steps: (1) finding a span to
+allocate from, and (2) randomly allocating an object from that span.
+\Mesh{} always allocates from a thread-local shuffle vector -- a
+randomized version of a freelist (described in detail in
+\S\ref{sec:shuffle-freelists}). The shuffle vector contains offsets
+corresponding to the slots of a single span.  We call that span the
+\emph{attached} span for a given thread.
+
+If the shuffle vector is empty, \Mesh relinquishes the current
+thread's attached span (if one exists) to the \emph{global heap}
+(which holds all unattached spans), and asks it to select a new
+span. If there are no partially full spans, the global heap returns a
+new, empty span.  Otherwise, it selects a partially full span for
+reuse. To maximize utilization, the global heap groups spans into bins
+organized by decreasing occupancy (e.g., 75-99\% full in one bin,
+50-74\% in the next). The global heap scans for the first non-empty
+bin (by decreasing occupancy), and randomly selects a span from that
+bin.
+
+Once a span has been selected, the allocator adds the offsets
+corresponding to the free slots in that span to the thread-local
+shuffle vector (in a random order). \Mesh{} pops the first entry off
+the shuffle vector and returns it.
+
+
+\subsection{Deallocation}
+\label{sec:deallocation-algorithm}
+
+Deallocation behaves differently depending on whether the free is
+local (the address belongs to the current thread's attached span),
+remote (the object belongs to another thread's attached span), or if
+it belongs to the global heap.
+
+For local frees, \Mesh{} adds the object's offset onto the span's
+shuffle vector in a random position and returns. For remote frees,
+\Mesh{} atomically resets the bit in the corresponding index in a
+bitmap associated with each span. Finally, for an object belonging to
+the global heap, \Mesh{} marks the object as free, updates the span's
+occupancy bin; this action may additionally trigger meshing.
+%, which we
+%describe below.
+
+%% Global frees similarly mark the space backing an allocation as free and open for reuse in the owning span, but additionally may trigger meshing.  Meshing happens after a global free if it has been more than a set period of time since the last meshing (settable both at program startup and later by the program through the \texttt{mallctl} API, by default a tenth of a second, and if the allocator thinks there is a reasonable chance of meshing reclaiming space.
+
+%% TODO: free -- right now, we assume unlimited virtual addresses; max limit of ranges in kernel (discuss in implementation)
+
+
+\subsection{Meshing}
+\label{sec:meshing-algorithm}
+
+When meshing, \Mesh{} randomly chooses pairs of spans and attempts to
+mesh each pair. The meshing algorithm, which we call \sm
+(Figure~\ref{fig:meshalg}), is designed both for practical
+effectiveness and for its theoretical guarantees.  The parameter $t$,
+which determines the maximum number of times each span is probed (line
+\ref{li:outerloop}), enables space-time trade-offs. The parameter $t$
+can be increased to improve mesh quality and therefore reduce space,
+or decreased to improve runtime, at the cost of sacrificed meshing
+opportunities. We empirically found that $t=64$ balances runtime and
+meshing effectiveness, and use this value in our implementation.
+
+\sm proceeds by iterating through $S_l$ and checking whether it can
+mesh each span with another span chosen from $S_r$ (line
+\ref{li:condition}).  If so, it removes these spans from their
+respective lists and meshes them (lines
+\ref{li:remove}--\ref{li:mesh}). \sm repeats until it has checked $t *
+|S_l|$ pairs of spans; \S\ref{sec:meshing-implementation} describes
+the implementation of \sm in detail.
+
+\begin{comment}
+  At this point, each span has been checked exactly once.  All spans not
+removed from the lists are still candidates for meshing.  \sm loops
+again through the lists, in the $j$th step comparing the $j$th span in
+$S_l$ with the $j+1$th span in $S_r$.  Again, whenever it compares a
+pair of spans that can mesh, it removes them from their respective
+lists and meshes them.
+
+\sm repeats this looping process $t$ times.  On the $i$th loop through
+the lists, the $j$th element in $S_l$ is compared with the $j+i-1$th
+element in $S_r$.  After this outer loop (line~\ref{li:outerloop}) has
+completed, any remaining span has been compared with $t$ other spans,
+each time failing to mesh. \sm stops here and makes no further effort
+to mesh these spans.
+\end{comment}
+
+
+\iffalse
+\begin{algorithm}[tb]
+  \LinesNumbered
+  \SetKwData{Frontier}{frontier}\SetKwData{This}{this}\SetKwData{OldNode}{$n_{old}$}\SetKwData{NewNode}{$n_{new}$}
+  \SetKw{Continue}{continue} \SetKw{And}{and}
+  \SetKwData{Null}{null}
+  \SetKwData{Path}{path}
+  \SetKwData{OldEdges}{$E_{old}$}
+  \SetKwData{NewEdges}{$E_{new}$}
+  \SetKwData{OldEdge}{$e_{old}$}
+  \SetKwData{NewEdge}{$e_{new}$}
+  \SetKwData{Length}{Length}
+  \SetKwData{True}{true} \SetKwData{False}{false}
+  \SetKwFunction{MakeTuple}{MakeTuple}
+  \SetKwFunction{GetRoot}{GetRoot}\SetKwFunction{Enqueue}{enqueue}\SetKwFunction{Length}{length}\SetKwFunction{Dequeue}{dequeue}
+  \SetKwFunction{HasVisited}{HasVisited}
+  \SetKwFunction{MarkAsVisited}{MarkAsVisited}
+  \SetKwFunction{MarkAsGrowing}{MarkAsGrowing}
+  \SetKwFunction{MarkNotGrowing}{MarkNotGrowing}
+  \SetKwFunction{RecordGrowingPath}{RecordGrowingPath}
+  \SetKwFunction{IsGrowing}{IsGrowing}
+  \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+  \Input{$G_{final} = (N, E)$}
+  \Frontier$\leftarrow$ []\;
+  $n_{root} \leftarrow$ \GetRoot{$G_{final}$}\;
+  \For{$e = (n_1, n2) \in E : n_1 = n_{root}$}{
+    \Frontier.\Enqueue{\MakeTuple{\Null, $e$}}
+  }
+  \While{\Frontier.\Length $\neq 0$}{
+    $T \leftarrow$ \Frontier.\Dequeue{}\;
+    $(T_{prev}, e) \leftarrow T$\;
+    \eIf{\HasVisited{$e$}}{
+      \Continue\;
+    }{
+      \MarkAsVisited{$e$}\;
+    }
+    $(n_{from}, n_{to}) \leftarrow e$\;
+
+    \If{\IsGrowing{$n_{to}$}}{
+      \RecordGrowingPath{$T$}\;
+    }
+    \ForEach{$e=(n_1,n_2) \in E : n_1 = n_{to}$}{
+      \Frontier.\Enqueue{\MakeTuple{$T$, $e$}}\;
+    }
+  }
+  \caption{FindLeakPaths, which records paths through the heap to leaking nodes. RecordGrowingPath recovers the entire path to the edge $e$ by following the linked list formed by the tuple $T$.}
+  \label{algo:findpaths}
+\end{algorithm}
+\fi
+
+\iffalse
+\begin{algorithm}[tb]
+  \SetAlgorithmName{\sm}{}{}
+  \SetKwInOut{Input}{Input}
+  \SetKwInOut{Output}{Output}
+  \Input{randomly ordered list of spans S, $|S| = n$; parameter $t$}
+
+  M $ \leftarrow$ []\;
+
+  $S_l,$ $S_r = S[1:\frac{n}{2}],$ $S[\frac{n}{2}+1 : n]$\;
+  \ForEach{$i \in [0, t-1]$}{
+    len = length$(S_l)$\;
+    \ForEach{$j \in [0, \frac{n}{2}-1]$}{
+      \If{$S_l(j)$ and $S_r(j+i$ mod len) mesh}{
+        $S_l \leftarrow S_l \textbackslash S_l(j)$\;
+        $S_r \leftarrow S_r \textbackslash S_r(j+i$ mod len)\;
+        M $\leftarrow$ M $\cup$ $S_l(j)$ $\cup$ $S_r(j+i$ mod len)\;
+      }
+    }
+  }
+  \Return M\;
+  \TitleOfAlgo{Procedure splits span set into halves and probes for meshable pairs between halves.}
+%  \label{alg:mesher}
+\end{algorithm}
+\fi
+
+\begin{figure}[!t]
+\begin{codebox}
+    \Procname{$\sm(S,t)$}
+%    \li M $\gets$ []
+    \li $n \gets$ length$(S)$
+    \li $S_l,$ $S_r \gets S[1:n/2],$ $S[n/2 +1 : n]$
+    \li \For $(i = 0, i<t, i++)$ \label{li:outerloop}
+        \li \Do
+            $\mbox{len} = |S_l|$\;
+            \li \For $(j = 0, j < \mbox{len}, j++)$ \label{li:innerloop}
+                \li \Do
+                    \If \proc{Meshable} $(S_l(j)$, $S_r(j+i$ \% $\mbox{len}$)) \Then \label{li:condition}
+                        \li $S_l \leftarrow S_l \setminus S_l(j)$ \label{li:remove}
+                        \li $S_r \leftarrow S_r \setminus S_r(j+i$ \% $\mbox{len}$)
+%                        \li M $\leftarrow$ M $\cup$ $S_l(j)$ $\cup$ $S_r(j+i$ mod len)
+                        \li \proc{mesh}($ S_l(j)$, $S_r(j+i$ \% $\mbox{len}$)) \label{li:mesh}
+                    \End
+                \End
+        \End
+%    \li \Return M
+\end{codebox}
+\caption{\textbf{Meshing random pairs of spans.} \sm splits the randomly ordered span list $S$ into halves, then probes pairs between halves for meshes.  Each span is probed up to $t$ times.}
+\label{fig:meshalg}
+\end{figure}

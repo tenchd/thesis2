@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+import csv
+import numpy
+from collections import defaultdict
+
+DATA_FILE = 'data/firefox-consumption-raw.tsv'
+
+def slurp(fname):
+    with open(fname, 'r') as f:
+        return f.read()
+
+memory = defaultdict(list)
+
+with open(DATA_FILE, newline='') as data_file:
+    reader = csv.DictReader(data_file, dialect=csv.excel_tab)
+    for row in reader:
+        memory[row['allocator']].append(int(row['rss']))
+
+# print(numpy.array(memory['glibc']))
+ref_usage = numpy.mean(numpy.array(memory['mozjemalloc']))
+
+MB = 1.0 / 1024.0 / 1024.0
+
+for allocator in sorted(memory.keys()):
+    usage = numpy.array(memory[allocator])
+    mean = numpy.mean(usage)
+    stddev = numpy.std(usage)
+    print('%s\t%.3f\t%.3f\t%.3f' % (allocator, mean / ref_usage, mean * MB, stddev * MB))

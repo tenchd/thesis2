@@ -1,0 +1,193 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\bibstyle{ACM-Reference-Format}
+\citation{hara:stateofblink}
+\citation{awsy}
+\citation{jemalloc:exposehints,redis:announcement}
+\citation{johnstone:1998:fragmentation}
+\citation{robson:1977:worstcasefrag}
+\@LN@col{1}
+\babel@aux{english}{}
+\@writefile{toc}{\contentsline {section}{Abstract}{1}{section*.1}}
+\@LN@col{2}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}}
+\newlabel{sec:introduction}{{1}{1}{Introduction}{section.1}{}}
+\citation{1542521}
+\citation{robson:1977:worstcasefrag}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{pre-meshing}{{1a}{2}{Subfigure 1a}{subfigure.1.1}{}}
+\newlabel{sub@pre-meshing}{{(a)}{a}{Subfigure 1a\relax }{subfigure.1.1}{}}
+\newlabel{post-meshing}{{1b}{2}{Subfigure 1b}{subfigure.1.2}{}}
+\newlabel{sub@post-meshing}{{(b)}{b}{Subfigure 1b\relax }{subfigure.1.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \textbf  {\textsc  {Mesh}\xspace  {} in action.} \textsc  {Mesh}\xspace  {} employs novel randomized algorithms that let it efficiently find and then ``mesh'' candidate pages within \emph  {spans} (contiguous 4K pages) whose contents do not overlap. In this example, it increases memory utilization across these pages from 37.5\% to 75\%, and returns one physical page to the OS (via \texttt  {munmap}), reducing the overall memory footprint. \textsc  {Mesh}\xspace  {}'s randomized allocation algorithm ensures meshing's effectiveness with high probability.\relax }}{2}{figure.caption.5}}
+\newlabel{fig:meshing}{{1}{2}{\textbf {\Mesh {} in action.} \Mesh {} employs novel randomized algorithms that let it efficiently find and then ``mesh'' candidate pages within \emph {spans} (contiguous 4K pages) whose contents do not overlap. In this example, it increases memory utilization across these pages from 37.5\% to 75\%, and returns one physical page to the OS (via \texttt {munmap}), reducing the overall memory footprint. \Mesh {}'s randomized allocation algorithm ensures meshing's effectiveness with high probability.\relax }{figure.caption.5}{}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {\textbf {Before:} these pages are candidates for ``meshing'' \newline because their allocated objects do not overlap.\vspace {2em}}}}{2}{subfigure.1.1}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {\textbf {After:} both virtual pages now point to the first physical page; the second page is now freed.}}}{2}{subfigure.1.2}}
+\@LN@col{1}
+\@LN@col{2}
+\@LN@col{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Contributions}{3}{subsection.1.1}}
+\newlabel{sec:contributions}{{1.1}{3}{Contributions}{subsection.1.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Overview}{3}{section.2}}
+\newlabel{sec:meshing}{{2}{3}{Overview}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Remapping Virtual Pages}{3}{subsection.2.1}}
+\@LN@col{2}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Random Allocation}{3}{subsection.2.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Finding Spans to Mesh}{3}{subsection.2.3}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Algorithms}{3}{section.3}}
+\newlabel{sec:algorithms}{{3}{3}{Algorithms}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Allocation}{3}{subsection.3.1}}
+\newlabel{sec:allocation-algorithm}{{3.1}{3}{Allocation}{subsection.3.1}{}}
+\citation{Novark:2010:DSH:1866307.1866371,1134000,379232,evans2006scalable,ghemawattcmalloc}
+\citation{evans2006scalable}
+\@LN@col{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Deallocation}{4}{subsection.3.2}}
+\newlabel{sec:deallocation-algorithm}{{3.2}{4}{Deallocation}{subsection.3.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Meshing}{4}{subsection.3.3}}
+\newlabel{sec:meshing-algorithm}{{3.3}{4}{Meshing}{subsection.3.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Implementation}{4}{section.4}}
+\newlabel{sec:allocator}{{4}{4}{Implementation}{section.4}{}}
+\@LN@col{2}
+\newlabel{li:outerloop}{{3}{4}{Meshing}{figure.caption.6}{}}
+\newlabel{li:innerloop}{{5}{4}{Meshing}{figure.caption.6}{}}
+\newlabel{li:condition}{{6}{4}{Meshing}{figure.caption.6}{}}
+\newlabel{li:remove}{{7}{4}{Meshing}{figure.caption.6}{}}
+\newlabel{li:mesh}{{9}{4}{Meshing}{figure.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textbf  {Meshing random pairs of spans.} \textnormal  {\scshape  SplitMesher}\xspace  splits the randomly ordered span list $S$ into halves, then probes pairs between halves for meshes. Each span is probed up to $t$ times.\relax }}{4}{figure.caption.6}}
+\newlabel{fig:meshalg}{{2}{4}{\textbf {Meshing random pairs of spans.} \sm splits the randomly ordered span list $S$ into halves, then probes pairs between halves for meshes. Each span is probed up to $t$ times.\relax }{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}MiniHeaps}{4}{subsection.4.1}}
+\newlabel{sec:miniheaps}{{4.1}{4}{MiniHeaps}{subsection.4.1}{}}
+\citation{1134000,Novark:2010:DSH:1866307.1866371}
+\citation{knuth:1981:semi}
+\@LN@col{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Shuffle Vectors}{5}{subsection.4.2}}
+\newlabel{sec:shuffle-freelists}{{4.2}{5}{Shuffle Vectors}{subsection.4.2}{}}
+\@LN@col{2}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces \textbf  {Shuffle vectors} compactly enable fast random allocation. Indices (one byte each) are maintained in random order; allocation is popping, and deallocation is pushing plus a random swap (\S  \ref  {sec:shuffle-freelists}).\relax }}{5}{figure.caption.7}}
+\newlabel{fig:shuffle-freelists}{{3}{5}{\textbf {Shuffle vectors} compactly enable fast random allocation. Indices (one byte each) are maintained in random order; allocation is popping, and deallocation is pushing plus a random swap (\S \ref {sec:shuffle-freelists}).\relax }{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {A shuffle vector for a span of size 8, where no objects have yet been allocated.}}}{5}{subfigure.3.1}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {The shuffle vector after the first object has been allocated.}}}{5}{subfigure.3.2}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {On \texttt {free}, the object's offset is pushed onto the front of the vector, the allocation index is updated, and the offset is swapped with a randomly chosen offset.}}}{5}{subfigure.3.3}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(d)}{\ignorespaces {Finally, after the swap, new allocations proceed in a bump-pointer like fashion.}}}{5}{subfigure.3.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Thread Local Heaps}{5}{subsection.4.3}}
+\newlabel{sec:thread-local-heaps}{{4.3}{5}{Thread Local Heaps}{subsection.4.3}{}}
+\@LN@col{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Pseudocode for \textsc  {Mesh}\xspace  's core allocation and deallocation routines.\relax }}{6}{figure.caption.8}}
+\newlabel{fig:malloc}{{4}{6}{Pseudocode for \Mesh 's core allocation and deallocation routines.\relax }{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Global Heap}{6}{subsection.4.4}}
+\newlabel{sec:global-heap}{{4.4}{6}{Global Heap}{subsection.4.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}The Meshable Arena}{6}{subsubsection.4.4.1}}
+\newlabel{sec:meshable-arena}{{4.4.1}{6}{The Meshable Arena}{subsubsection.4.4.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.2}MiniHeap Allocation}{6}{subsubsection.4.4.2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.3}Large Objects}{6}{subsubsection.4.4.3}}
+\@LN@col{2}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.4}Non-local Frees}{6}{subsubsection.4.4.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Meshing}{6}{subsection.4.5}}
+\newlabel{sec:meshing-implementation}{{4.5}{6}{Meshing}{subsection.4.5}{}}
+\citation{click:2005:pauseless,tene:2011:c4}
+\citation{cloudera:thb,redis:thb,mongodb:thb,oracle:thb,nelson:thb}
+\citation{lwn:hp-interfaces}
+\@LN@col{1}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.1}Page Table Updates}{7}{subsubsection.4.5.1}}
+\newlabel{sec:page-table-updates}{{4.5.1}{7}{Page Table Updates}{subsubsection.4.5.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.2}Concurrent Meshing}{7}{subsubsection.4.5.2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.3}Concurrent Allocation}{7}{subsubsection.4.5.3}}
+\@LN@col{2}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Huge Pages}{7}{subsection.4.6}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Analysis}{7}{section.5}}
+\newlabel{sec:theory}{{5}{7}{Analysis}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Formal Problem Definitions}{7}{subsection.5.1}}
+\newlabel{subsec:probdef}{{5.1}{7}{Formal Problem Definitions}{subsection.5.1}{}}
+\citation{zuckerman07}
+\@LN@col{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces \textbf  {An example meshing graph.} Nodes correspond to the spans represented by the strings \texttt  {01101000}, \texttt  {01010000}, \texttt  {00100110}, and \texttt  {00010000}. Edges connect meshable strings (corresponding to non-overlapping spans).\relax }}{8}{figure.caption.9}}
+\newlabel{fig:exmesh}{{5}{8}{\textbf {An example meshing graph.} Nodes correspond to the spans represented by the strings \texttt {01101000}, \texttt {01010000}, \texttt {00100110}, and \texttt {00010000}. Edges connect meshable strings (corresponding to non-overlapping spans).\relax }{figure.caption.9}{}}
+\newlabel{subsec:graph}{{5.1}{8}{A Formulation via Graphs:}{section*.10}{}}
+\@writefile{toc}{\contentsline {paragraph}{A Formulation via Graphs:}{8}{section*.10}}
+\newlabel{thm:polytime}{{5.2}{8}{}{theorem.5.2}{}}
+\@LN@col{2}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Simplifying the Problem: From \textsc  {MinCliqueCover} to \textsc  {Matching}}{8}{subsection.5.2}}
+\newlabel{subsec:matching}{{5.2}{8}{Simplifying the Problem: From \textsc {MinCliqueCover} to \textsc {Matching}}{subsection.5.2}{}}
+\@LN@col{1}
+\@writefile{toc}{\contentsline {paragraph}{Triangles and Larger Cliques are Uncommon.}{9}{section*.11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Theoretical Guarantees}{9}{subsection.5.3}}
+\newlabel{subsec:analysis}{{5.3}{9}{Theoretical Guarantees}{subsection.5.3}{}}
+\@LN@col{2}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Summary of Analytical Results}{9}{subsection.5.4}}
+\citation{redhat:cgroups}
+\citation{awsy}
+\citation{ff:quantum}
+\citation{jemalloc:exposehints,redis:announcement}
+\@LN@col{1}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Evaluation}{10}{section.6}}
+\newlabel{sec:evaluation}{{6}{10}{Evaluation}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Experimental Setup}{10}{subsection.6.1}}
+\newlabel{subsec:memory-use}{{6.1}{10}{Experimental Setup}{subsection.6.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Memory Savings and Performance Overhead}{10}{subsection.6.2}}
+\newlabel{sec:evaluation:overallmemory}{{6.2}{10}{Memory Savings and Performance Overhead}{subsection.6.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.1}Firefox}{10}{subsubsection.6.2.1}}
+\newlabel{sec:firefox}{{6.2.1}{10}{Firefox}{subsubsection.6.2.1}{}}
+\@LN@col{2}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces \textbf  {Firefox:} \textsc  {Mesh}\xspace  decreases mean heap size by 16\% over the course of the Speedometer 2.0 benchmark compared with the version of jemalloc bundled with Firefox, with less than a 1\% change in the reported Speedometer score (\S  \ref  {sec:firefox}). \relax }}{10}{figure.caption.12}}
+\newlabel{fig:firefox-heap}{{6}{10}{\textbf {Firefox:} \Mesh decreases mean heap size by 16\% over the course of the Speedometer 2.0 benchmark compared with the version of jemalloc bundled with Firefox, with less than a 1\% change in the reported Speedometer score (\S \ref {sec:firefox}). \relax }{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.2}Redis}{10}{subsubsection.6.2.2}}
+\newlabel{redis-section}{{6.2.2}{10}{Redis}{subsubsection.6.2.2}{}}
+\@LN@col{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces \textbf  {Redis:} \textsc  {Mesh}\xspace  automatically achieves significant memory savings (39\%), obviating the need for its custom, application-specific ``defragmentation'' routine (\S  \ref  {redis-section}). \relax }}{11}{figure.caption.13}}
+\newlabel{fig:redis-results}{{7}{11}{\textbf {Redis:} \Mesh automatically achieves significant memory savings (39\%), obviating the need for its custom, application-specific ``defragmentation'' routine (\S \ref {redis-section}). \relax }{figure.caption.13}{}}
+\@LN@col{2}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.3}SPEC Benchmarks}{11}{subsubsection.6.2.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Empirical Value of Randomization}{11}{subsection.6.3}}
+\newlabel{sec:evaluation:practical}{{6.3}{11}{Empirical Value of Randomization}{subsection.6.3}{}}
+\citation{1542521}
+\citation{detlefs:1992:gc}
+\citation{edelson:1992:precompilingcgc}
+\citation{google:oilpan}
+\citation{jemalloc:exposehints,redis:announcement}
+\citation{hansen:1969:compaction,fenichel:1969:compaction}
+\citation{microystems2006memory}
+\citation{microsoft:dotnet-gc}
+\citation{mozilla:spidermonkey-compaction}
+\citation{Cohen:2017:LPC:3050768.2994597,Cohen:2013:LPC:2491956.2491973}
+\@LN@col{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces \textbf  {Ruby benchmark:} \textsc  {Mesh}\xspace  is able to decrease mean heap size by 18\% compared to \textsc  {Mesh}\xspace  with randomization disabled and non-compacting allocators ($\S  $\ref  {sec:evaluation:practical}). \relax }}{12}{figure.caption.14}}
+\newlabel{fig:ruby-frag}{{8}{12}{\textbf {Ruby benchmark:} \Mesh is able to decrease mean heap size by 18\% compared to \Mesh with randomization disabled and non-compacting allocators ($\S $\ref {sec:evaluation:practical}). \relax }{figure.caption.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Summary of Empirical Results}{12}{subsection.6.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Related Work}{12}{section.7}}
+\newlabel{sec:related-work}{{7}{12}{Related Work}{section.7}{}}
+\newlabel{sec:hound}{{7}{12}{Hound:}{section*.15}{}}
+\@writefile{toc}{\contentsline {paragraph}{Hound:}{12}{section*.15}}
+\@LN@col{2}
+\@writefile{toc}{\contentsline {paragraph}{Compaction for C/C++:}{12}{section*.16}}
+\@writefile{toc}{\contentsline {paragraph}{Compacting garbage collection in managed languages:}{12}{section*.17}}
+\@writefile{toc}{\contentsline {paragraph}{Bounds on Partial Compaction:}{12}{section*.18}}
+\citation{ipek:2010:dynamic-replication}
+\bibdata{emery,mesh}
+\newlabel{tocindent-1}{0pt}
+\newlabel{tocindent0}{0pt}
+\newlabel{tocindent1}{4.65pt}
+\newlabel{tocindent2}{11.49998pt}
+\newlabel{tocindent3}{18.34998pt}
+\@LN@col{2}
+\@LN@col{1}
+\@writefile{toc}{\contentsline {paragraph}{PCM fault mitigation:}{13}{section*.19}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{13}{section.8}}
+\newlabel{sec:conclusion}{{8}{13}{Conclusion}{section.8}{}}
+\@writefile{toc}{\contentsline {section}{Acknowledgments}{13}{section*.21}}
+\newlabel{TotPages}{{13}{13}{}{page.13}{}}

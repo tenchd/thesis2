@@ -1,0 +1,474 @@
+%% 
+%% This is a sample doctoral dissertation.  It shows the appropriate
+%% structure for your dissertation.  It should handle most of the
+%% strange requirements imposed by the Grad school; like the different
+%% handling of titles of one/many appendices.  It will automatically
+%% handle the linespacing changes.  The body default is double-spaced
+%% (except when you use the singlespace or condensed options).  The
+%% default for quotations is single-space, and the default for tabular
+%% environments is also single-space.  
+%%
+%% This class adds the following commands and environments to the
+%% report class, upon which it is based:
+%% Commands
+%% ------------
+%% \degree{name}{abbrv} -- Sets the name and abbreviation for the degree.
+%%                         These default to ``Doctor of Philosopy''
+%%                         and ``Ph.D.'', respectively.
+%% \copyrightyear{year} -- for the copyright page.
+%% \bachelors{degree}{institution} -- for the abstract
+%% \masters{degree}{institution}   --  "
+%%     if you have other degrees you may use
+%% \secondbachelors{degree}{institution}
+%% \thirdbachelors{degree}{institution}
+%% \secondmasters{degree}{institution}
+%% \thirdmasters{degree}{institution}
+%% \priordoctorate{degree}{institution}
+%%
+%% \committeechair{name}           -- for the signature page
+%% or, if you have two co-chairs:
+%% \cochairs{first name}{second name}
+%%
+%% \firstreader{name}              --  "
+%% \secondreader{name}             --  "
+%% \thirdreader{name}              -- (optional)
+%% \fourthreader{name}             --  "
+%% \fifthreader{name}              --  "
+%% \sixthreader{name}              --  "
+%% \departmentchair{name}          -- for the signature page
+%% \departmentname{name}           --  "
+%%
+%% \copyrightpage                  -- produces the copyright page
+%% \signaturepage                  -- produces the signature page
+%%
+%% \frontmatter                    -- these are required in their various
+%% \mainmatter                     -- appropriate locations
+%% \backmatter                     --
+%%
+%% \unnumberedchapter[toc]{name}   -- like \chapter, except that it
+%%                                    produces an unnumbered chapter;
+%%                                    alternatively, like \chapter*,
+%%                                    except that it lists the chapter
+%%                                    in the table of contents.
+%%
+%% New environments:
+%%   dedication  -- for the dedication
+%%   abstract    -- for the abstract
+%%
+%% The thesis documentclass is built on top of the report document class.
+%% It accepts all of the options that the report class accepts, plus the
+%% following:
+%%     doublespace -- the default, indicates double spacing as per U.Mass.
+%%                    requirements.  You will need this when you do your
+%%                    final copy.
+%%     singlespace -- for earlier work, not acceptable to the Grad school
+%%     condensed   -- for earlier work, not acceptable to the Grad school,
+%%                    creates condensed versions of the frontmatter. 
+%%                    Condensed implies singlespace.
+%%     dissertation - the default, indicates that this document is a
+%%                    dissertation.
+%%     proposal    -- indicates that this document is a dissertation proposal,
+%%                    rather than a dissertation.  This will only change the
+%%                    wording on the title and signature pages.
+%%     thesis      -- indicates that this document is a Master's thesis 
+%%                    rather than a doctoral dissertation.  This also changes
+%%                    the default for \degree to Master of Science, M.S.
+%%     allowlisthypenation -- (the default), allows hyphenation of words in
+%%                    the table of contents, the list of figures, and the list
+%%                    of tables.  I believe that this is acceptable to the 
+%%                    Graduate School.
+%%     nolisthyphenation -- disallows hyphenation of words in the table of
+%%                    contents and the list of figures and tables.  Use this 
+%%                    option if the Grad School doesn't like your hyphenation.
+%%     nicerdraft  -- relaxes some of the Grad School's rules for working with
+%%                    drafts -- has no effect when doublespace is in effect
+%%     nonicerdraft -- the default, leaves things in draft as they will be in
+%%                     the final version
+%% umassthesis changes the default font size to 12pt, but you may specify 10pt or
+%%   11pt in the options.
+\documentclass[proposal,singlespace]{umassthesis}          % for Ph.D. dissertation or proposal
+% \documentclass[thesis]{umassthesis}  % for Master's thesis
+
+%%
+%% If you have enough figures or tables that you run out of space for their
+%% numbers in the List of Tables or List of figures, you can use the following
+%% command to adjust the space left for numbers.  The default is shown:
+%%
+%% \setlength{\tablenumberwidth}{2.3em}
+
+%% Use the hyperref package if you're producing a version for online
+%% distribution and you want hyperlinks.  Note that the Grad School doesn't want
+%% their PDF viewers to colorize or otherwise highlight the links; use the
+%% hidelinks option to hyperref to avoid decorating links.
+%\usepackage[hidelinks]{hyperref}
+
+%% One way of formatting the epigraph/frontispiece is to use this package.
+%\usepackage{epigraph}
+
+
+\usepackage{verbatim}
+
+
+%vertex connectivity preamble stuff
+
+\usepackage{url}
+%\usepackage{color,fullpage,microtype}
+%\usepackage{graphicx,wrapfig,subfigure,titling}
+\usepackage{amssymb,amsmath,amssymb,amsfonts}
+\usepackage{amsthm}
+\usepackage{textcomp}
+\usepackage{multirow}
+%\usepackage{gensymb}
+\usepackage{array}
+\usepackage{times}
+\usepackage[sort]{cite}
+
+\newtheorem{theorem}{Theorem}%[section]
+\newtheorem{definition}[theorem]{Definition}
+
+\newtheorem{proposition}[theorem]{Proposition}%[section]
+\newtheorem{corollary}[theorem]{Corollary}%[section]
+\newtheorem{lemma}[theorem]{Lemma}%[section]
+\newtheorem{conjecture}[theorem]{Conjecture}%[section]
+\newtheorem{fact}{Fact}
+\newtheorem{problem}{Problem}
+%\newtheorem{example}{Example}
+\newtheorem{claim}{Claim}
+
+%\newcommand{\vecx}{\mathbf{x}} 
+\newcommand{\vecy}{\mathbf{y}} 
+
+\newcommand{\expec}[1]{\mathbb E\left [ #1 \right ]}
+\newcommand{\rounddown}[1]{\left \lfloor  #1 \right \rfloor}
+\newcommand{\roundup}[1]{\left \lceil  #1 \right \rceil}
+\DeclareMathOperator{\polylog}{polylog}
+\DeclareMathOperator{\poly}{poly}
+\DeclareMathOperator{\light}{{light}}
+%\DeclareMathOperator{\outdeg}{out-deg}
+%\newcommand{\inneigh}{\Gamma^-}
+%\newcommand{\outneigh}{\Gamma^+}
+
+\newcommand{\todo}[1]{{\color{blue}[\textit{#1}]}}
+\newcommand{\reals}{{\mathbb R}}
+\newcommand{\prob}[1]{\mathbb P \left [ #1 \right ]}
+%\newcommand{\Egt}{U}
+%\newcommand{\Eslt}{D}
+
+\newcommand{\vecf}{\mathbf{f}} 
+
+%\newcommand{\sfv}{\begin{proof}See full version.\end{proof}}
+\newcommand{\sfv}{}
+\newcommand{\R}{{\mathbb R}}
+\renewcommand{\H}{{\cal H}}
+\renewcommand{\O}{{\cal O}}
+\newcommand{\etal}{{et al.~}}
+\newcommand{\rk}{\mbox{\sc Rk}}
+\newcommand{\hatyi}{\hat{y}_i}
+\newcommand{\hatk}{\hat{k}} 
+\newcommand{\veca}{\mathbf{a}} 
+\newcommand{\veczero}{\mathbf{0}}
+\newcommand{\vecone}{\mathbf{1}} 
+\newcommand{\vecx}{\mathbf{x}} 
+\newcommand{\delc}{{\Delta_C(i)}}
+\newcommand{\alg}{{\cal A}}
+\newcommand{\obj}{{\cal O}}
+\newcommand{\y}{{\mathbf Y}}
+\newcommand{\bin}{{\mathbf{Bin}}}
+\newcommand{\eat}[1]{}
+\newcommand{\acc}{E}
+\renewcommand{\k}{\kappa}
+
+\newcommand{\A}{{\cal A}}
+\newcommand{\B}{{\cal B}}
+
+\newcommand{\I}{{\cal I}}
+\newcommand{\D}{{\cal D}}
+\newcommand{\X}{{\cal X}}
+\newcommand{\Y}{{\cal Y}}
+\newcommand{\Z}{{\cal Z}}
+\renewcommand{\P}{{\cal P}}
+\renewcommand{\S}{{\cal S}}
+\newcommand{\cc}{cc}
+
+\newcommand{\E}{{\mathbf E}}
+%\newcommand{\comment}[1]{\marginpar{!!!}[#1]}
+
+\newcommand{\err}{{\mathcal E}}
+%\newcommand{\comment}[1]{{\color{red} #1} \marginpar{!!!}}
+
+
+\newcommand{\pparagraph}[1]{\vspace{0.1in}\noindent{\bf \boldmath #1}}
+
+
+
+
+% mesh preamble stuff
+
+%\usepackage{minted}
+%\RequirePackage[outputdir=latex.out,cache=false]{minted}
+%\RequirePackage[cache=false]{minted}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{graphicx}
+%\usepackage{url}
+%\usepackage{amsmath}
+%\usepackage{amssymb}
+\usepackage{relsize}
+\usepackage{tikz}
+\usepackage{clrscode3e}
+%\usepackage{amsthm}
+\usepackage{color}
+
+\newtheorem{observation}{Observation}%[section]
+
+
+\newcommand{\sm}{\proc{SplitMesher}\xspace}
+
+%% \setmonofont[Scale=MatchLowercase]{DejaVu Sans Mono}
+%% \setmonofont{DejaVu Sans Mono}
+
+\SetTracking{encoding={*}, shape=sc}{0} % No tracking for smallcaps
+
+\newcommand{\Mesh}{\textsc{Mesh}\xspace}
+\newcommand{\mesh}{Mesh\xspace}
+\newcommand{\ndegree}{\textup{d}} % Command \deg already defined by some dependency
+%\newcommand{\comments}[1]{[#1]}
+
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+%\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+%\captionsetup[subfloat]{font={small,sf}}
+% Settings for figures and tables. Figure captions are placed below the figure,
+% while table captions are placed above the table. All captions are sans-serif.
+\RequirePackage[font={normalsize,sf,bf}]{caption}
+\RequirePackage[position=bottom]{subfig}
+\captionsetup[table]{aboveskip=0.5em, belowskip=0.5em}
+\captionsetup[figure]{aboveskip=0.5em, belowskip=0em}
+\captionsetup[subfloat]{font={small,sf}}
+\setcounter{topnumber}{2}
+\setcounter{dbltopnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\dbltopfraction}{0.9}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.85}
+\renewcommand{\dblfloatpagefraction}{0.85}
+
+\setlength{\floatsep}{0.5em plus 0.2em minus 0.2em}
+\setlength{\dblfloatsep}{0.5em plus 0.2em minus 0.2em}
+\setlength{\textfloatsep}{0.5em plus 0.2em minus 0.2em}
+\setlength{\dbltextfloatsep}{0.5em plus 0.2em minus 0.2em}
+
+% Utility packages for floats and tables.
+\RequirePackage{float}
+\RequirePackage{graphicx}
+\RequirePackage{booktabs}
+\RequirePackage{multirow}
+
+
+
+
+\begin{document}
+
+%%
+%% You must fill in all of these appropriately
+\title{Algorithms for Massive, Expensive, or Otherwise Inconvenient Graphs}
+\author{David Tench}
+\date{Jun 2020} % The date you'll actually graduate -- must be
+                     % February, May, or September
+\copyrightyear{2020}
+\bachelors{B.Sc.}{Lehigh University}
+\masters{M.Sc.}{University of Massachusetts Amherst}
+%\secondmasters{M.Ed.}{Antioch College}
+%\priordoctorate{M.D.}{University of Never-never-land}
+\committeechair{Andrew McGregor}
+%\cochairs{B. B. Bahh}{I. M. A. Wolf}
+\firstreader{Phillipa Gill}
+\secondreader{Cameron Musco}
+\thirdreader{Markos Katsoulakis}
+%\fourthreader{Mary Lamb}   % Optional
+%\fifthreader{}            % Optional
+%\sixthreader{}            % Optional
+\departmentchair[Chair of the Faculty]{James Allan} % Default uses "Department Chair" as the title. To
+% use an alternate title, such as "Chair", use \departmentchair[Chair]{Pete Shearer}
+% CICS uses "Chair of the Faculty" as of 2019.
+\departmentname{College of Information and Computer Sciences}
+
+%% If your degree is something other than a Ph.D. (for a dissertation), or
+%% an M.S. (for a thesis), you will need to uncomment the appropriate
+%% following line:
+%%
+%% \degree{Doctor of Education}{Ed.D.}
+\degree{Doctor of Philosophy}{Ph.D.}
+%%
+%% \degree{Master of Arts}{M.A.}
+%% \degree{Master of Arts in Teaching}{M.A.T.}
+%% \degree{Master of Business Administration}{M.B.A.}
+%% \degree{Master of Education}{M.Ed.}
+%% \degree{Master of Fine Arts}{M.F.A.}
+%% \degree{Master of Landscape Architecture}{M.L.A.}
+%% \degree{Master of Music}{M.M.}
+%% \degree{Master of Public Administration}{M.P.A.}
+%\degree{Master of Public Health}{M.P.H.}
+%% \degree{Master of Regional Planning}{M.R.P.}
+%% \degree{Master of Science}{M.S.}
+%% \degree{Master of Science in Accounting}{M.S. Acctg.}
+%% \degree{Master of Science in Chemical Engineering}{M.S. Ch.E.}
+%% \degree{Master of Science in Civil Engineering}{M.S.C.E.}
+%% \degree{Master of Science in Electrical and Computer Engineering}{M.S.E.C.E.}
+%% \degree{Master of Science in Engineering Management}{M.S. Eng. Mgt.}
+%% \degree{Master of Science in Environmental Engineering}{M.S. Env. E.}
+%% \degree{Master of Science in Industrial Engineering and Operations Research}{M.S.I.E.O.R.}
+%% \degree{Master of Science in Manufacturing Engineering}{M.S. Mfg. Eng.}
+%% \degree{Master of Science in Mechanical Engineering}{M.S.M.E.}
+%%
+%% \degree{Professional Master of Business Administration}{P.M.B.A.}
+
+
+%%
+%% These lines produce the title, copyright, and signature pages.
+%% They are Mandatory; except that you could leave out the copyright page
+%% if you were preparing an M.S. thesis instead of a PhD dissertation.
+\frontmatter
+\maketitle
+\copyrightpage     %% not required for an M.S. thesis
+\signaturepage
+
+%%
+%% Dedication is optional -- but this is how you create it
+\begin{dedication}              % Dedication page
+  \begin{center}
+    \emph{To my mother and father.}
+  \end{center}
+\end{dedication}
+
+%%
+%% Epigraph (aka frontispiece) is also optional, but this is one way you
+%% can create it
+%\begin{frontispiece}
+%  %% Format to your liking -- see documentation of epigraph package
+%  \setlength{\epigraphrule}{0pt}
+%
+%  \begin{epigraphs}
+%    \qitem{%
+%      \itshape
+%      Mary had a little lamb,\\
+%      Her fleece was white as snow.\\
+%      \vspace{\baselineskip}
+%      And everywhere that Mary went\\
+%      The lamb was sure to go.
+%      \vspace{\baselineskip}}
+%    {Sarah Josepha Hale}
+%
+%    \vspace{2\baselineskip}
+%    \qitem{%
+%      \itshape
+%      Baa, baa, black sheep,\\
+%      Have you any wool?\\
+%      Yes, sir, yes, sir,\\
+%      Three bags full;\\
+%      One for the master,\\
+%      And one for the dame,\\
+%      And one for the little boy\\
+%      Who lives down the lane.
+%      \vspace{\baselineskip}}
+%    {English Nursery Rhyme}
+%
+%  \end{epigraphs}
+%\end{frontispiece}
+
+%%
+%% Acknowledgements are optional...yeah, right.
+\chapter{Acknowledgments}             % Acknowledgements page
+  Thanks to all those fine shepherds. Not to mention all the great
+  border collies and suchlike fine animals.
+
+%%
+%% Abstract is MANDATORY. -- Except for MS theses
+\begin{abstract}                % Abstract
+
+  A long-standing assumption common in algorithm design is that any part of the input is accessible at any time for unit cost.  However, as we work with increasingly large data sets, or as we build smaller devices, we must revisit this assumption.  In this proposal, I present of my work on graph algorithms designed for circumstances where traditional assumptions about inputs do not apply.
+
+1. Classical graph algorithms require direct access to the input graphand this is not feasible when the graph is too large to fit in memory.  For computation on massive graphs we consider the dynamic streaming graph model.  Given an input graph defined by as a stream of edge insertions and deletions, our goal is to approximate properties of this graph using space sublinear in the size of the stream.  In this proposal, I present algorithms for approximating vertex connectivity and hypergraph edge connectivity in graph streams.
+
+2. In certain applications the input graph is not explicitly represented, but its edges may be discovered via queries which require costly computation or measurement.  I present Mesh, a memory manager which compacts memory efficiently by finding an approximate graph matching subject to stringent time and edge query restrictions.
+
+\end{abstract}
+
+%%
+%% Preface goes here...would be just like Acknowledgements -- optional
+%% \chapter{Preface} 
+%% ...
+
+
+%%
+%% Table of contents is mandatory, lists of tables and figures are 
+%% mandatory if you have any tables or figures; must be in this order.
+\tableofcontents                % Table of contents
+\listoftables                   % List of Tables
+\listoffigures                  % List of Figures
+
+%%
+%% We don't handle List of Abbreviations
+%% We don't handle Glossary
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Time for the body of the dissertation
+\mainmatter   %% <-- This line is mandatory
+
+%%
+%% If you want an introduction, which is not a numbered chapter, insert
+%% the following two lines.  This is OPTIONAL:
+\unnumberedchapter{Introduction}
+Why on earth do I want to study sheep anyway?
+
+%%
+%% Some sample text
+
+\input{Chapters/Chapter1} % Introduction
+
+\input{Chapters/Chapter2} % Vertex
+
+\input{Chapters/Chapter3} % Mesh
+
+
+
+
+
+%% End of body
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+\chapter{Scan-First Trees}
+\input{Chapters/vertex/scanfirst}
+
+
+%\chapter{THE SECOND APPENDIX TITLE}
+%...
+
+%%
+%% Beginning of back matter
+\backmatter  %% <--- mandatory
+
+%%
+%% We don't support endnotes
+
+%%
+%% A bibliography is required.
+\interlinepenalty=10000  % prevent split bibliography entries
+\bibliographystyle{umassthesis}
+\bibliography{dynamic}
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
