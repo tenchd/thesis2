@@ -262,7 +262,12 @@ dirty pages over clean pages to minimize the process's RSS.
 % TODO: mention how this is also how aligned allocations work
 
 \begin{figure}[!t]
-  \input{Chapters/mesh/all-code}
+  \centering
+  \subfloat{\lstinputlisting[language=C++, basicstyle=\footnotesize]{Chapters/mesh/all-code1}}
+  \centering
+  \subfloat{\lstinputlisting[language=C++, basicstyle=\footnotesize]{Chapters/mesh/all-code2}}
+  %\input{Chapters/mesh/all-code1}
+  %\input{Chapters/mesh/all-code2}
 %  \input{./local-malloc.cc}
 %  \input{./freelist-attach.cc}
 %  \input{./miniheap-malloc.cc}

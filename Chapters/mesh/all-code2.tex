@@ -1,0 +1,27 @@
+
+
+void *ShuffleVector::malloc() {
+  const auto off = _list[_off++];
+  return _spanStart + off * _objSize;
+}
+
+void MeshLocal::free(void *ptr) {
+  // check if in attached MiniHeap
+  for (auto i=0; i<SizeClassCount; i++){
+    const auto curr = _shufVecs[i];
+    if (curr->contains(ptr)) {
+      curr->free(ptr);
+      return; } }
+  _global->free(ptr); // general case
+}
+
+void ShuffleVector::free(void *ptr) {
+  const auto freedOff = getOff(ptr);
+  _list[--_off] = freedOff;
+  // place newly freed address
+  // randomly in the shuffle vector
+  auto swapOff =
+    _rng.inRange(_off, maxCount() - 1);
+  swap(_list[_off], _list[swapOff]);
+}
+
