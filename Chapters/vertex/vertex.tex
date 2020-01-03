@@ -163,7 +163,7 @@ A growing body of work addresses the challenge of processing dynamic graph strea
 Linear sketches have proved to be a powerful technique in this model and can also be used  to minimize communication in distributed graph processing. 
 
 We present the first linear sketches for estimating vertex connectivity and constructing hypergraph sparsifiers. 
-Vertex connectivity exhibits markedly different combinatorial structure than edge connectivity and appears to be harder to estimate in the dynamic graph stream model. Our hypergraph result generalizes the work of Ahn et al.~(PODS 2012) on graph sparsification and has the added benefit of significantly simplifying the previous results. One of the main ideas is related to the problem of reconstructing subgraphs that satisfy a specific sparsity property. We introduce a more general notion of graph degeneracy and extend the graph reconstruction result of Becker et al.~(IPDPS 2011).
+Vertex connectivity exhibits markedly different combinatorial structure than edge connectivity and appears to be harder to estimate in the dynamic graph stream model. Our hypergraph result generalizes the work of Ahn et al.~\cite{AhnGM12a} on graph sparsification and has the added benefit of significantly simplifying the previous results. One of the main ideas is related to the problem of reconstructing subgraphs that satisfy a specific sparsity property. We introduce a more general notion of graph degeneracy and extend the graph reconstruction result of Becker et al.~\cite{BeckerMNRST11}.
 %Vertex connectivity is significantly different from edge connectivity 
 %and even the proof of existence of sparse certificates requires nontrivial algorithms (Cheriyan et al. SICOMP 1993). However existing techniques 
 %do not provide sublinear space algorithms in the dynamic setting -- which is addressed by the results herein. 
@@ -274,6 +274,9 @@ Then note that there is a path between $v_i$ and $v_{i+1}$ in $H\setminus S$ if 
 \prob{\mbox{$v_i$ and $v_{i+1}$ are connected in $T_i\setminus S$}} \geq 1/k^2 (1-1/k)^k
 \]
 and therefore 
+$$\prob{\mbox{$v_i$ and $v_{i+1}$ are disconnected in $T_i\setminus S$ for all $i\in [R]$}} \leq (1-1/k^2 (1-1/k)^k)^R \leq 1/n^4 \ .$$
+
+\begin{comment}
 \begin{eqnarray*}
 & & \prob{\mbox{$v_i$ and $v_{i+1}$ are disconnected in $T_i\setminus S$ for all $i\in [R]$}} \\
 &\leq & (1-1/k^2 (1-1/k)^k)^R 
@@ -281,6 +284,8 @@ and therefore
 %&\leq &\exp(-R/k^2 (1-1/k)^k)
 \leq 1/n^4 \ .
 \end{eqnarray*}
+\end{comment}
+
 Taking the union bound over all $\ell <n$ pairs $\{v_i, v_{i+1}\}$, we conclude that 
 $s$ and $t$ are connected in $H\setminus S$ with probability at least $1-1/n^3$. By applying the union bound again, with probability at least $1-1/n^2$, $s$ is connected in $H\setminus S$ to all other vertices.
 \end{proof}
@@ -463,7 +468,7 @@ Since $H$ is a subgraph $\lambda_e(H)\leq \lambda_e(G)$ and hence $\lambda_e(G)\
 %Of course this is a trivial algorithm! The challenge is to perform it via a set of simultaneous linear measurements.
 
 \pparagraph{Constructing Spanning Graphs.}
-For each vertex $v_i\in V$, define the vector $\veca^i\in \{-1,0,1,2, \ldots, r-1\}^d$ where $d=\sum_{i=2}^r {n\choose i}$ is the number of possible hyperedges of size at most $r$:
+For each vertex $v_i\in V$, define the vector $\veca^i\in \{-1,0,1,2, $ \\ $\ldots, r-1\}^d$ where $d=\sum_{i=2}^r {n\choose i}$ is the number of possible hyperedges of size at most $r$:
 % whose $\{j,k\}\in {[n]\choose 2}$ entry is defined as  
  \[
   \veca^i_{e}=
@@ -539,7 +544,7 @@ Do to this we use  $k$ independent spanning graph sketches $\alg^1(G), $ $ \alg^
 
 
 \begin{theorem}[$k$-Skeleton Sketches]
-There exists a vertex-based sketch $\B$ of size $O(kn\polylog n)$ such that we can  find of a $k$-skeleton  a hypergraph $G$ from $\B(G)$ with high probability.
+There exists a vertex-based sketch $\B$ of size \\ $O(kn\polylog n)$ such that we can  find of a $k$-skeleton  a hypergraph $G$ from $\B(G)$ with high probability.
 \end{theorem}
 
 \subsection{Beyond $k$-Skeletons}
@@ -653,7 +658,7 @@ By re-parameterizing $\epsilon \leftarrow \epsilon/(2\ell)$ and using the sketch
 
 %\section{Conclusions}
 
-\pparagraph{Acknowledgements.} We thank Jennifer Chayes for prompting us to investigate  hypergraph connectivity.
+%\pparagraph{Acknowledgements.} We thank Jennifer Chayes for prompting us to investigate  hypergraph connectivity.
 %{ 
 %\bibliographystyle{abbrv} \bibliography{dynamic}
 %}

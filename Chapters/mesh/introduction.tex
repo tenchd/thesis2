@@ -4,6 +4,27 @@
 % TODO: mention evaluation results
 
 
+
+
+
+\section{Introduction}
+\label{sec:introduction}
+
+Memory consumption is a serious concern across the spectrum of modern
+computing platforms, from mobile to desktop to datacenters. For
+example, on low-end Android devices, Google reports that more than 99
+percent of Chrome crashes are due to running out of memory when
+attempting to display a web page~\cite{hara:stateofblink}. On
+desktops, the Firefox web browser has been the subject of a five-year
+effort to reduce its memory footprint~\cite{awsy}. In datacenters,
+developers implement a range of techniques from custom allocators to
+other \emph{ad hoc} approaches in an effort to increase memory
+utilization~\cite{jemalloc:exposehints,redis:announcement}.
+%% while
+%% Google reports that 10\% of CPU cycles in their clusters are spent on
+%% memory allocation~\cite{kanev:2015:warehouse-scale}.
+
+
 \begin{figure*}[t!]
   \centering
   \subfloat[\textbf{Before:} these pages are candidates for
@@ -33,44 +54,6 @@
   \label{fig:meshing}
 \end{figure*}
 
-
-\iffalse
-\begin{figure*}[t!]
-  \centering
-  {
-      \includegraphics[width=0.45\textwidth]{Chapters/mesh/figures/mesh-diagram-1}
-  }
-
-  \caption{\textbf{\Mesh{} in action.} \Mesh{} employs novel
-    randomized algorithms that let it efficiently find and then
-    ``mesh'' candidate pages within \emph{spans} (contiguous 4K pages)
-    whose contents do not overlap.  In this example, it increases
-    memory utilization across these pages from 37.5\% to 75\%, and
-    returns one physical page to the OS (via \texttt{munmap}),
-    reducing the overall memory footprint. \Mesh{}'s randomized
-    allocation algorithm ensures meshing's effectiveness with high
-    probability.}
-
-  \label{fig:meshing}
-\end{figure*}
-\fi
-
-\section{Introduction}
-\label{sec:introduction}
-
-Memory consumption is a serious concern across the spectrum of modern
-computing platforms, from mobile to desktop to datacenters. For
-example, on low-end Android devices, Google reports that more than 99
-percent of Chrome crashes are due to running out of memory when
-attempting to display a web page~\cite{hara:stateofblink}. On
-desktops, the Firefox web browser has been the subject of a five-year
-effort to reduce its memory footprint~\cite{awsy}. In datacenters,
-developers implement a range of techniques from custom allocators to
-other \emph{ad hoc} approaches in an effort to increase memory
-utilization~\cite{jemalloc:exposehints,redis:announcement}.
-%% while
-%% Google reports that 10\% of CPU cycles in their clusters are spent on
-%% memory allocation~\cite{kanev:2015:warehouse-scale}.
 
 A key challenge is that, unlike in garbage-collected environments,
 automatically reducing a C/C++ application's memory footprint
