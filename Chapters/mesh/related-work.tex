@@ -1,7 +1,7 @@
 \section{Related Work}
 \label{sec:related-work}
 
-\paragraph{Hound:}
+\paragraph*{Hound:}
 \label{sec:hound}
 Hound is a memory leak detector for C/C++ applications that introduced
 meshing (a.k.a. ``virtual compaction''), a mechanism that \Mesh{}
@@ -24,7 +24,7 @@ decreases it.
 %(which is focused on 64-bit applications) hard.
 
 
-\paragraph{Compaction for C/C++:}
+\paragraph*{Compaction for C/C++:}
 Previous work has described a variety of manual and compiler-based
 approaches to support compaction for C++. Detlefs shows that if
 developers use annotations in the form of smart pointers, C++ code can
@@ -56,7 +56,7 @@ ensure that these objects are actually contiguous in memory. Unlike
 these approaches, \Mesh performs compaction efficiently and its
 effectiveness is guaranteed.
 
-\paragraph{Compacting garbage collection in managed languages:}
+\paragraph*{Compacting garbage collection in managed languages:}
 %% Recently Baker et al. showed that with compiler support you could
 %% achieve accurate GC for C and C++~\cite{baker:2009:accurategc}.
 Compacting garbage collection has long been a feature of languages
@@ -70,7 +70,7 @@ benefits of compaction to C/C++; in principle, it could also be used
 to automatically enable compaction for language implementations that
 rely on non-compacting collectors.
 
-\paragraph{Bounds on Partial Compaction:}
+\paragraph*{Bounds on Partial Compaction:}
 Cohen and Petrank prove upper and lower bounds on defragmentation via
 partial compaction~\cite{Cohen:2017:LPC:3050768.2994597,
   Cohen:2013:LPC:2491956.2491973}. In their setting, corresponding to
@@ -87,7 +87,7 @@ where objects \emph{cannot} be arbitrarily relocated.
 %such a facility instead of page remapping to mesh pages containing
 %objects of a cache line size (e.g., 64 bytes) or larger.
 
-\paragraph{PCM fault mitigation:}
+\paragraph*{PCM fault mitigation:}
 Ipek \emph{et al.} use a technique similar to meshing to address the
 degradation of phase-change memory (PCM) over the lifetime of a
 device~\cite{ipek:2010:dynamic-replication}.  The authors introduce

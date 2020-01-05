@@ -88,7 +88,7 @@ that releases the maximum number of strings.
 % \phi$, where $\rho$ is the number of total meshes performed, and $\phi$
 % is the number of strings that remain unmeshed.
 
-\paragraph{A Formulation via Graphs:}
+\paragraph*{A Formulation via Graphs:}
 \label{subsec:graph}
 
 We observe that an instance of the meshing problem, a string multi-set
@@ -270,7 +270,7 @@ linearity of expectation, the expected number of good matches is
 $rn/2$. We decompose $\sum_i X_i$ into \[Z_0+Z_1+\ldots + Z_{t-1} ~~\mbox{
   where }~~ Z_{j} = \sum_{i\equiv j \bmod t} X_i \ .\] Since each
 $Z_j$ is a sum of $n/(2t)$ independent variables, by the Chernoff
-bound, $P\lp Z_j < \lp 1-\epsilon \rparen E[Z_j]\rparen \leq \exp\lp -
+bound,\\ $P\lp Z_j < \lp 1-\epsilon \rparen E[Z_j]\rparen \leq \exp\lp -
 \epsilon^2 r n/(4t)\rparen$.  By the union bound,
 $$P\lp X < \lp 1-\epsilon \rparen rn/2\rparen \leq t \exp\lp - \epsilon^2 r
 n/(4t)\rparen$$ and this becomes arbitrarily small as $n$ grows.
