@@ -5,3 +5,6 @@
 *.pdf
 *.out
 *.gz
+*.lof
+*.lot
+*.toc
