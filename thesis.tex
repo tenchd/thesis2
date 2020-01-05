@@ -277,6 +277,73 @@
 
 
 
+% PathCache sysname
+\newcommand{\sysname}{PathCache}
+
+
+
+
+
+
+%unique cover stuff
+\newcommand{\uc}{
+  \ifmmode
+  \mathsf{UniqueCover}
+  \else
+  $\mathsf{UniqueCover}$
+  \fi
+  \xspace
+}
+
+\newcommand{\mc}{
+  \ifmmode
+  \mathsf{MaxCover}
+  \else
+  $\mathsf{MaxCover}$
+  \fi
+  \xspace
+}
+
+
+\newcommand{\setcover}{
+  \ifmmode
+  \mathsf{SetCover}
+  \else
+  $\mathsf{SetCover}$
+  \fi
+  \xspace
+}
+
+\newcommand{\maxcut}{
+  \ifmmode
+  \mathsf{MaxCut}
+  \else
+  $\mathsf{MaxCut}$
+  \fi
+  \xspace
+}
+
+\newcommand{\maxbisection}{
+  \ifmmode
+  \mathsf{MaxBisection}
+  \else
+  $\mathsf{MaxBisection}$
+  \fi
+  \xspace
+}
+
+\newcommand{\submodular}{
+  \ifmmode
+  \mathsf{SubmodularMax}
+  \else
+  $\mathsf{SubmodularMax}$
+  \fi
+  \xspace
+}
+
+
+
+
 \begin{document}
 
 %%
@@ -389,18 +456,21 @@
 %%
 %% Acknowledgements are optional...yeah, right.
 \chapter{Acknowledgments}             % Acknowledgements page
-  Thanks to all those fine shepherds. Not to mention all the great
-  border collies and suchlike fine animals.
+  %Thanks to all those fine shepherds. Not to mention all the great
+  %border collies and suchlike fine animals.
+  I thank Andrew McGregor, whose guidance and intellectual generosity has helped me grow as a thinker and researcher; my past and current collaborators and coauthors Sudipto Guha, Hoa Vu, Sofya Vorotnikova, Emery Berger, Bobby Powers, Phillipa Gill, Rachee Singh, Albert Williams, and Cameron Musco; my brother Connor for the immense patience he exercised in enduring my agitated rantings about graph theory; my mother Mary Louise and my father Robert, and all of my incredibly supportive family - Jon, Heidi, Dave, Mark, Bobby, Grandma Bernie, Clark, Debbie, Anne, Ruth, Brian, Darryl Lynn, Bill, Sherri, and others; all the friends and loved ones who talked about my work with me including Tyler, Portia, Jacob, Rob, Jeremy, Diana, Roman, Apoorva, Ella, and Cecily; Ms. Bolinsky, Mr. Fegley, Jack Stevenson, Dave Riekenberg, Michael Raposa, Greg Skutches, Mary Foltz, Sue Jacobson-Boskitz, Rich Davis, Michael \& Rita Piovane, Jared Carver, and the many other teachers in my life who believed in me or pushed me to try harder than I thought I could.
+
+
 
 %%
 %% Abstract is MANDATORY. -- Except for MS theses
 \begin{abstract}                % Abstract
 
-  A long-standing assumption common in algorithm design is that any part of the input is accessible at any time for unit cost.  However, as we work with increasingly large data sets, or as we build smaller devices, we must revisit this assumption.  In this proposal, I present of my work on graph algorithms designed for circumstances where traditional assumptions about inputs do not apply.
+  A long-standing assumption common in algorithm design is that any part of the input is accessible at any time for unit cost.  However, as we work with increasingly large data sets, or as we build smaller devices, we must revisit this assumption.  In this proposal, I present some of my work on graph algorithms designed for circumstances where traditional assumptions about inputs do not apply.
 
 1. Classical graph algorithms require direct access to the input graph and this is not feasible when the graph is too large to fit in memory.  For computation on massive graphs we consider the dynamic streaming graph model.  Given an input graph defined by as a stream of edge insertions and deletions, our goal is to approximate properties of this graph using space sublinear in the size of the stream.  In this proposal, I present algorithms for approximating vertex connectivity and hypergraph edge connectivity in graph streams.
 
-2. In certain applications the input graph is not explicitly represented, but its edges may be discovered via queries which require costly computation or measurement.  I present Mesh, a memory manager which compacts memory efficiently by finding an approximate graph matching subject to stringent time and edge query restrictions.
+2. In certain applications the input graph is not explicitly represented, but its edges may be discovered via queries which require costly computation or measurement.  I present \Mesh, a memory manager which compacts memory efficiently by finding an approximate graph matching subject to stringent time and edge query restrictions.
 
 \end{abstract}
 
@@ -414,7 +484,7 @@
 %% Table of contents is mandatory, lists of tables and figures are 
 %% mandatory if you have any tables or figures; must be in this order.
 \tableofcontents                % Table of contents
-\listoftables                   % List of Tables
+%\listoftables                   % List of Tables
 \listoffigures                  % List of Figures
 
 %%

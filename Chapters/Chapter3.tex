@@ -1,2 +1,81 @@
 \chapter{Current and Future Work}
 \label{chap:futurework}
+
+In this chapter we briefly describe several active research directions and the progress made to date on each.  First, we briefly describe two nearly-complete projects: 
+\begin{itemize}
+\item \sysname{} (\ref{sec:pc}), a system that predicts network paths between arbitrary hosts on the Internet using a limited budget of measurements from an internet measurement platform
+\item results in the graph streaming setting on algorithms for computing maximum unique cover and capacitated maximum cut (\ref{sec:uc}).
+\end{itemize}
+
+Next, we describe two less-developed areas of study:
+
+\begin{itemize}
+\item Temporal graph streaming (\ref{sec:tempgraph}), or problems in the graph streaming model where edges may exist at some times and not others
+\item Graph/matrix reconstruction from random subgraph/submatrix queries (\ref{sec:recon}).
+\end{itemize}
+
+\section{\sysname}
+\label{sec:pc}
+
+Accurate prediction of network paths between arbitrary hosts on the Internet is of
+vital importance for network operators, cloud providers, and academic researchers.
+We present \sysname, a system that predicts network paths between arbitrary hosts on
+the Internet using historical knowledge of the data and control plane. In addition to feeding on
+freely available traceroutes and BGP routing tables \sysname{} optimally explores
+network paths towards chosen BGP prefixes. \sysname's
+strategy for exploring network paths discovers 4X more autonomous systems (AS) 
+hops than other well-known strategies used in practice today.
+Using a corpus of traceroutes, \sysname{} trains probabilistic models
+of routing towards all routed prefixes on the Internet and 
+infers network paths and their likelihood.
+\sysname's AS-path predictions differ from the measured path by at most 1 hop, 75\% of the time.
+A prototype of
+\sysname is live today to facilitate its 
+inclusion in other applications and studies.
+We additionally demonstrate the utility of \sysname{} in improving
+real-world applications for circumventing Internet censorship and preserving anonymity online.
+
+\subsection{Current Status}
+The bulk of the work for \sysname{} is finished.  We have designed and analyzed the algorithms that power the system, and a functional prototype is running and accessible online.  \sysname{} will soon be submitted to SIGCOMM 2020 (since SIGCOMM's review process is double-blind, the prototype is not yet  publically available).
+
+\section{Unique Cover and Capacitated Max Cut}
+\label{sec:uc}
+
+We study streaming algorithms for the $\uc(k)$ problem. 
+%This problem was originally studied in the offline setting by Demaine \etal \cite{DemaineFHS08}. 
+The input is $m$ subsets of the universe $\{1,\ldots,n\}$ and the problem is to find a collection of at most $k$ of these sets such that the number of elements covered by exactly one set is maximized. In the streaming set model, the sets are revealed online and our goal is to design algorithms with approximation guarantee that use sublinear $o(mn)$ space. A special case of this problem is the capacitated maximum cut problem, $\maxcut(k)$, where the universe corresponds to edges of a graph and there is a set corresponding to each node that includes all incident edges of that node. The goal is to find a subset of at most $k$ nodes that cuts the maximum number of edges. 
+%Both problems have been studied in the offline settings. We study these problems in the streaming model. 
+Our main results to date are as follows.%We present data stream algorithms using $\poly(\epsilon^{-1},k,\log mn )$ bits of space.
+\begin{itemize}
+\item $\uc(k)$: We present a one-pass $\Omega(1/\log k)$ approximation algorithm. Under the assumption that a) each element belongs to a constant number of sets or b) each set intersects with a constant number of other sets, we exhibit a two-pass and $0.5-\epsilon$-approximation algorithm.  
+\item $\maxcut(k)$: We present a one-pass $0.5-\epsilon$ approximation algorithm.
+% and a two-pass $0.5-\epsilon$ approximation algorithm. 
+% The latter algorithm uses significantly less space than in the corresponding two-pass $\uc(k)$ result.
+\end{itemize} 
+We also present a one-pass $O(mk/\epsilon^{2} \cdot \polylog(m,n))$ space algorithm that returns a $1-\epsilon$ approximation for $\uc(k)$. On the lower bound side, we show that any constant-pass algorithm for $\uc(k)$ that finds an approximation better than $e^{-1}$ requires $\Omega(m/k^2)$ space and any one-pass algorithm that finds a $1-\epsilon$ approximation requires $\Omega(\epsilon^{-2} m)$ space even for constant $k$.
+
+\subsection{Current Status}
+We are currently looking for ways to improve the results known in the paper.  For instance, can we 
+
+
+\section{Temporal Graph Streaming}
+\label{sec:tempgraph}
+
+Graphs are extremely general and useful structures which can elegantly represent many aspects of real-world structures such as social networks, disease spreading models, and the Internet. However, one aspect of all of these structure that the traditional view of graphs does not accomodate is temporality - for example, perhaps two people in a social network are friends on Monday, but have a fight and are no longer friends by Tuesday.  To capture such dynamics, we can imagine that each edge in a graph is assigned a label which indicates the times at which the edge exists and times at which it does not exist.  We call such graphs temporal graphs.  The study of temporal graphs is in its infancy \cite{temporalsurvey} and to date no one has considered algorithms on temporal graphs in the streaming domain.
+
+A temporal graph $D = (V, A),$ $A \subset V$x$V$x$\mathbb{N}$ in the streaming setting is defined by a sequence of edge insertions and deletions $a \in A$ where each edge update contains a timestamp indicating the time at which the edge appeared or disappeared from the temporal graph.  We typically assume that edge updates arrive in increasing timestamp order.  As with the dynamic graph streaming model defined in Chapter \ref{chap:vertex}, we assume that we have space sublinear in the stream length.
+
+What can be computed in this setting?  A natural first property to study is connectivity or reachability.  In the non-temporal (static) graph setting, a graph is connected iff there is a path between any two nodes in the graph.  In temporal graphs, the fact that edges exist at some times and not others complicates our notion of a path.  We define a temporal path or \emph{journey}  as an alternating series of nodes and timestamps $(u_1, t_1, u_2, t_2, \dots, u_{k-1}, t_{k-1}, u_k)$ where $((u_i, u_{i+1}),t_i) \in A$ for all $ 1 \leq i \leq k-1$ and $t_i \leq t_{i+1}$ for all $1 \leq i \leq k-2$.  Given access to a stream defining $D$ and $O(n \polylog(n))$ space, can we determine whether $D$ has a journey between arbitrary nodes $(s,t) \in V$?
+
+There are many problems to consider in this domain. Does $D$ contain a journey that visits every node at least once?  Can we extend classic graph streaming techniques like fingerprinting to the temporal graph setting?  How would one find maximum matchings on $D$ subject to edge time constraints (e.g., matching edges must have distinct timestamps, or must all have the same timestamp)?
+
+\subsection{Current Status}
+We have proven some lower bounds for variations of the streaming journey problem.  $\theta(n)$ space is necessary and sufficient for deciding whether there is a journey if we know the start node of the journey before the stream.  If we do not know the start or end node of the journey before the stream, and the temporal graph is directed, journey decision requires $\Omega(n^2)$ space.  $\Omega(n^2)$ space is also necessary if edges appear out of timestamp order in the stream, or if the journey can only contain edges after an arbitrary timestep. Given a destination node $v$ at the end of the stream, we can compute how many $u,v$ journeys exist for all $u \in V$, or sample uniformly at random from all such $u$, in $O(n \polylog(n))$ space.  
+
+\section{Graph Reconstruction from Random Queries}
+\label{sec:recon}
+
+Say we have query access to a graph in the sense that we can make a query that returns an induced subgraph of a graph $G$ where each node is present in the induced subgraph with probability 1/2. How many such queries are required to reconstruct the original graph? More generally, say we instead want to reconstruct a matrix where each query returns the matrix with each (unlabeled) row and column removed with probability 1/2. How many queries are required in this case?
+
+\subsection{Current Status}
+We have just begun to consider this class of problems and have no significant results yet.
