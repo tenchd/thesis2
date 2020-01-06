@@ -231,7 +231,8 @@ Sketches are also useful in distributed settings. In particular, the model consi
 
 \section{Vertex Connectivity}\label{sec:vertex}
 
-A natural approach to determining vertex connectivity could be to try to mimic the algorithm of Cheriyan et al.~\cite{CheriyanKT93}. They showed that the union of $k$ disjoint ``scan first search trees" (a generalization of breadth-first search trees) can be used to determine if a graph is $k$ vertex connected. A similar approach worked in data stream model for the case of edge-connectivity (which we discuss in further detail in the next section) but in that case the trees to be constructed could be arbitrary. Unfortunately, we can show (see appendix) that any algorithm for constructing a scan-first search tree in the data stream model requires $\Omega(n^2)$ space even when there are no edge deletions.
+A natural approach to determining vertex connectivity could be to try to mimic the algorithm of Cheriyan et al.~\cite{CheriyanKT93}. They showed that the union of $k$ disjoint ``scan first search trees" (a generalization of breadth-first search trees) can be used to determine if a graph is $k$ vertex connected. A similar approach worked in data stream model for the case of edge-connectivity (which we discuss in further detail in the next section) but in that case the trees to be constructed could be arbitrary. Unfortunately, we can show %(see appendix) 
+that any algorithm for constructing a scan-first search tree in the data stream model requires $\Omega(n^2)$ space even when there are no edge deletions.\\
 
 %
 %%The same difficulty arises in the context of proving that sparse certificates of vertex connectivity exist. 
@@ -240,6 +241,9 @@ A natural approach to determining vertex connectivity could be to try to mimic t
 %Breadth first search trees are scan first search trees, but there exists scan first search trees that not breadth first search trees. This fact is highlighted and exploited in \cite{CheriyanKT93} from the perspective of parallel algorithms -- while the construction of breadth first is difficult to achieve in a parallel setting; the construction of scan first trees was shown to be much easier. However from the perspective of space complexity (the parallel algorithms in \cite{CheriyanKT93} used shared memory) the construction of a single scan first tree under edge insertions only requires $\Omega(n^2)$ space. 
 %
 %
+
+\input{Chapters/vertex/scanfirst}
+
 
 To avoid this issue, we take a different approach based on finding arbitrary spanning trees for the induced graph on a random subset of vertices.\footnote{We note that the idea of subsampling vertices
 % in the context of vertex connectivity 

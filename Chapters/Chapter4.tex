@@ -1,2 +1,55 @@
-\chapter{Roadmap to Thesis Defense}
+\chapter{Roadmap to Dissertation Defense}
 \label{chap:roadmap}
+
+We propose to defend in June 2020.
+
+Over the intervening months, we propose to:
+\begin{itemize}
+\item complete \& publish work on the \sysname{} and Unique Cover projects
+\item significantly develop the existing body of work on temporal graph streaming and graph reconstruction problems, and to submit the results for conference publication
+\item write up additional existing results for chapters based on current publications
+\end{itemize}
+
+The sections below details the proposed plan and milestones for each project.  Note that we have no current need for outside resources such as software licenses, hardware, access to data sets, etc.
+
+\section{Mesh}
+We have proven some auxiliary complexity results for the meshing problem which were outside the scope of the publication and which as a result have not yet been written.  Most notably, we proved results concerning the complexity of the meshing problem when string length is allowed to vary with input size, rather than being constant.  We will write up these results and add them to the Mesh chapter.
+
+\paragraph*{Timeline}
+Since the results are already proven, the process of writing them should be fast.  They will be written and added within a month of proposal, so by the end of February 2020.
+
+\section{\sysname}
+As stated in Section~\ref{sec:pc}, the \sysname{} project will soon be submitted and the theoretic contributions are complete, barring some last-minute need to redesign.  
+
+\paragraph*{Timeline}
+We expect to submit to SIGCOMM 2020 by the February 7 deadline.
+
+\section{Unique Cover and Capacitated Max Cut}
+As stated in Section~\ref{sec:uc}, the remaining work on this nearly-complete project is to strengthen the existing results, likely by answering the questions posed above.  We also intend to reorganize the current paper draft.
+
+We propose to strengthen or replace several results in the current (complete) draft of the paper for this project, and rewrite the paper to accomodate them, within the next two months (by March 2020).  By that point, we will submit the paper to the next suitable conference.  Within a month of that time (by April 2020), we will adapt the submitted paper as a dissertation chapter.
+
+\section{Temporal Graph Streaming}
+We plan first to more fully investigate our partial results on connectivity in the temporal streaming graph setting.  We have algorithms or lower bounds for detecting the existence of journeys from a dynamic temporal graph stream under several different sets of assumptions, but have not yet resolved what seems to be the most basic version of this question: How much space is required to detect any $u,v \in V$ journey from a dynamic temporal undirected graph stream?
+
+Armed with a baseline understanding of connectivity in this setting, we can build to more complicated questions.  Call an undirected temporal graph \emph{strongly time-connected} iff there is a journey between any pair of its nodes.  Given a strongly time-connected graph, what is the minimum number of edges which can be deleted so that the graph is no longer strongly time-connected?  This property is a natural temporal analogue of the notion of edge connectivity in graphs.  Can existing graph streaming results for approximating edge connectivity be extended to the temporal settings?  We can also investigate various temporal analogues of other important graph properties in the streaming setting, such as finding temporal maximum matchings, counting triangles composed of 'contemporary' edges, and determining whether the temporal graph has a journey containing all of its nodes.
+
+One of the foundational techniques in graph streaming is the ability to sample an edge uniformly at random from the entire graph, or from the adjacency list of some node.  In a temporal graph, one might wish to sample a edge from a time interval.  Is this sampling task possible in streaming?  What about other sampling tasks, such as sampling where probabilities are weighed by a function of the duration of an edge's existence?
+
+%While no work exists on temporal graphs in the streaming setting, there is a small but growing body of literature on temporal graphs.  We plan to review this work both to better understand this new area of graph theory and to find natural algorithmic problems to study in the streaming domain.
+
+\paragraph*{Timeline}
+We are already attempting to prove more results for the problem of journey detection in temporal graph streams.  Within a month or two, we can hope to have enough understanding of basic connectivity concepts to investigate more algorithmic questions in this setting.
+
+The next goal is to establish a sufficiently broad and compelling set of results from those listed above (temporal edge connectivity, matchings, triangle counting, detecting complete journeys, and sampling techniques) to submit for publication.  Ideally this would occur within four months (April 2020).  This timeline would allow these results to be written in full for the dissertation and for publication by the time of the dissertation defense in June 2020.
+
+
+\section{Graph Reconstruction}
+In Section~\ref{sec:recon} we present the most basic version of this question: how many random induced subgraphs are required to completely reconstruct a graph when each node is present in each induced subgraph with probability 1/2?  We might also consider generalizations of this question, such as when the probability is an arbitrary $0 < p < 1$ or when we wish to reconstruct a matrix from random submatrices.
+
+As we investigate these questions, we may discover that other query models are equally or more interesting to study than those described above.  The finished work may consider multiple query models and study the relationship between the robustness of the query model and the number of queries required for reconstruction.
+
+\paragraph*{Timeline}
+We hope to have a (hopefully tight) bound for the 1/2 probability graph reconstruction question within two months (by March 2020).
+
+Next, we plan to attempt to have a broader set of results for various graph/matrix reconstruction questions by May 2020, leaving enough time to write these results for inclusion in the dissertation and for submission to a conference by June 2020.

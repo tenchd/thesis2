@@ -1,4 +1,4 @@
-\section{Algorithms}
+\section{Algorithms \& System Design}
 \label{sec:algorithms}
 
 %This section provides an overview of \Mesh{}'s algorithms.
@@ -20,8 +20,8 @@ loss of generality, all algorithms described here are per size class
 Allocation in \Mesh{} consists of two steps: (1) finding a span to
 allocate from, and (2) randomly allocating an object from that span.
 \Mesh{} always allocates from a thread-local shuffle vector -- a
-randomized version of a freelist (described in detail in
-\S\ref{sec:shuffle-freelists}). The shuffle vector contains offsets
+randomized version of a freelist %(described in detail in\S\ref{sec:shuffle-freelists}). 
+The shuffle vector contains offsets
 corresponding to the slots of a single span.  We call that span the
 \emph{attached} span for a given thread.
 

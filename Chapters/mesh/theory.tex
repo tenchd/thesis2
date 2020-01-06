@@ -22,7 +22,9 @@
 \newcommand{\node}{\mathit {v}}
 \newcommand{\W}{\mathcal {W}}
 \newcommand{\lp}{\left(}
+%\newcommand{\rparen}{\right)}
 \newcommand{\rparen}{\right)}
+\newcommand{\rp}{\right)}
 
 %%caveat required for lemma 4.4 added below.  run by andrew before finalizing
 This section shows that the \sm procedure described in
@@ -181,7 +183,7 @@ easier \textsc{Matching} problem on the meshing graph (i.e.,
 restricting our attention to finding cliques of size 2) instead of
 \textsc{MinCliqueCover}. Another consequence of the above observation is that we will not be able to appeal to  theoretical results on the standard model of random graphs, \emph{Erd\H{o}s-Renyi graphs}, in which  each possible edge is present with some fixed probability and the edges are fully independent. Instead we will need new algorithms and proofs that only require independence of acyclic collections of edges.
 
-\paragraph{Triangles and Larger Cliques are Uncommon.}
+\subsubsection{Triangles and Larger Cliques are Uncommon.}
 Because of the dependencies across the edges present in a meshing
 graph, we can argue that \emph{triangles} (and hence also larger
 cliques) are relatively infrequent in the graph and certainly less
@@ -201,6 +203,42 @@ low that even if there were $1000$ strings, the expected number of
 triangles would be less than 2. In contrast, had all meshes been
 independent, with the same parameters, there would have been $167$ triangles.
 
+The above analysis suggests that we can focus on finding only cliques
+of size 2, thereby solving \textsc{Matching} instead of
+\textsc{MinCliqueCover}. The evaluation in
+Section~\ref{sec:exp} vindicates this approach, and we show a
+strong accuracy guarantee for \textsc{Matching} in Section~\ref{subsec:analysis}.
+% We also verify this empirically in the Appendix.
+
+\subsection{Experimental Confirmation of Maximum Matching/Min Clique Cover Convergence}
+\label{subsec:exp}
+
+In Section~\ref{subsec:matching}, we argue that we can approximate the solution to \textsc{MinCliqueCover} on meshing graphs with high probability by instead solving \textsc{MaximumMatching}.
+
+We experimentally verify this result by generating many random constant occupancy graphs and, for each graph, comparing the size of the maximum matching to the size of a greedy (non-optimal) solution for \textsc{MinCliqueCover}.  The results are summarized in Figure~\ref{plot:const}.
+
+\begin{figure}[h]
+\includegraphics[scale = 1]{Chapters/mesh/figures/const_match_comp.pdf}
+\centering
+\caption{\textbf{Min Clique Cover and Max Matching solutions converge.} The average size of Min Clique Cover and Max Matching for randomly generated constant occupancy meshing graphs, plotted against span occupancy.  Note that for sufficiently high-occupancy spans, Min Clique Cover and Max Matching are nearly equal.}
+\label{plot:const}
+\end{figure}
+
+
+
+When we instead assume bits are 1 independently with probability p, we expect the graph to have many more triangles.  For $p = r/b = 10/32, n = 1000$, the expected number of triangles is roughly 36,000.  However, we can see experimentally that these graphs behave quite similarly in Figure~\ref{plot:indep}.
+
+
+\begin{figure}[h]
+\includegraphics[scale = 1]{Chapters/mesh/figures/ind_match_comp.pdf}
+\centering
+\caption{\textbf{Converge still holds for independent bits assumption.} The average size of Min Clique Cover and Max Matching for randomly generated constant occupancy meshing graphs, plotted against span occupancy.  Note that for sufficiently high-occupancy spans, Min Clique Cover and Max Matching are nearly equal.}
+\label{plot:indep}
+\end{figure}
+
+While constant occupancy graphs are fairly regular, independent bit graphs may not be.  Since strings have different occupancies, nodes which correspond to strings with relatively low occupancy will tend to have significantly higher degree than other nodes in the graph.  Meanwhile, other nodes may have strings with high occupancy, and therefore only have a few edges (probably with low-occupancy nodes).  So while there are many triangles, when the graph is sparse enough, even meshing cliques of size 3 and 4 will likely "abandon" adjacent high-occupancy nodes, one of which could have been matched with the high degree node to yield the same number of releases.
+
+So in this case we still expect finding the maximum matching to be good enough.
 % \paragraph{We Can Restrict Our Attention to Matching.}
 \begin{comment}
 The above analysis leads us to conclude that, since there are
@@ -209,12 +247,6 @@ full benefits of solving \textsc{MinCliqueCover} by only solving
 \textsc{Matching}.
 \end{comment}
 
-The above analysis suggests that we can focus on finding only cliques
-of size 2, thereby solving \textsc{Matching} instead of
-\textsc{MinCliqueCover}. The evaluation in
-Section~\ref{sec:evaluation} vindicates this approach, and we show a
-strong accuracy guarantee for \textsc{Matching} below.
-% We also verify this empirically in the Appendix.
 
 \subsection{Theoretical Guarantees}
 \label{subsec:analysis}
@@ -285,7 +317,6 @@ overhead.
 
 
 
-\begin{comment}
 
 \subsection{New Lower Bound for Maximum Matching Size}
 \label{subsec:lowerbound}
@@ -330,9 +361,84 @@ due to space constraints):
 % . Then, $\sum_{e\in E} w_e \leq M$.
 \end{theorem}
 
-\paragraph{A remark on estimating $\W$.}  If we wish to use this lower bound to decide whether to begin meshing by predicting the size of the maximum matching, we cannot compute it exactly because we do not know the degrees of the nodes in the graph.  However, we do know the degree distribution of the graph and so it is possible to calculate the expected value of $\W$.
+\begin{proof}
+We begin by showing that the simpler quantity $W$ is a lower bound of the maximum matching $M$.
+\[
+W = \sum_{e\in E} \frac{1}{\max(\ndegree\lp u\rparen, \ndegree\lp v\rparen )+1}\ .
+\]
+%For each edge $e = (u,v) \in G$, define $\W$$(e)=min\lp \frac{1}{\ndegree\lp u\rparen +1},\frac{1}{\ndegree\lp %v\rparen +1}\rparen$.  L
+Let $U$ be an arbitrary set of $t$ nodes in $G$ where $t$ is odd.   Define $$W(U) = \sum_{u,v \in U} \frac{1}{\max(\ndegree\lp u\rparen, \ndegree\lp v\rparen )+1} \ . $$ As a corollary of Edmonds Matching Polytope Theorem, it can be shown that $W \leq M$ if  $W(U) \leq (|U|-1)/2$. We can argue this as follows:
 
-\end{comment}
+\begin{align*}
+W(U) &= \sum_{(u,v) \in U} \min \left(\frac{1}{\ndegree(u)+1},\frac{1}{\ndegree(v)+1}\right )\\
+& \leq \sum_{(u,v) \in U}\frac{1}{2}\lp \frac{1}{\ndegree\lp u \rparen +1}+\frac{1}{\ndegree\lp v\rparen +1}\rparen\\
+&\leq \sum_{(u,v) \in U}\frac{1}{2}\lp \frac{1}{\ndegree_U\lp u\rparen +1}+\frac{1}{\ndegree_U\lp v\rparen +1}\rparen\\
+&= \frac{1}{2} \sum_{u \in U} \frac{\ndegree_U\lp u\rp }{\ndegree_U\lp u\rp +1} \leq  \frac{1}{2} \lp \frac{t-1}{t}\rp  t = \frac{t-1}{2}
+\end{align*}
+where $\ndegree_U(u)$ in the number of neighbors of $u$ in the set $U$.
+The second line follows from the fact that the minimum of two quantities is bounded above by their average.  The third line follows from the fact that the degree of any node in a subgraph is bounded above by its degree in the original graph.  The fourth line follows from summing over nodes instead of edges, and then reasoning that in the worst case U is a clique and so $\degree_U(u) = t-1$ for all u $u$.
+
+\iffalse
+Recall that we prove in Section~\ref{subsec:lowerbound} that when
+\[
+w_e=\min\lp \frac{1}{\ndegree\lp u\rp+1 },\frac{1}{\ndegree\lp v\rp+1 }\rp
+~~\mbox{ and }~~\W=\sum_{e\in E} w_e \ .\]
+then $\W$ is a lower bound on the cardinality of the maximum matching M(G).
+\fi
+
+
+In some cases $W$ is too conservative; it assigns little weight to edges which it could safely have assigned much more.  For example, if $e$ is isolated (meaning its endpoints have degree 1), $W(e) = 1/2$.  However, it is always safe to assign weight 1 to $e$, since $M(G-e) = M(G)-1.$  If we modified our rule for $W$ so that for any edge $e= (u,v)$ s.t. $\deg(u)=\deg(v) = 1$ we assigned weight $ \min(1/\deg(u),1/\deg(v))$ instead of $ \min(1/\deg(u)+1,1/\deg(v)+1)$, we would always assign weight 1 to isolated edges.
+
+In fact, a more general rule is true.  For any edge $e= (u,v)$, if either $\deg(u) or \deg(v) = 1$ then we may assign it weight $\min(1/\deg(u),1/\deg(v))$.
+
+\iffalse
+At this point it is natural to ask whether we can remove the $+1$s from the denominator for other edges.  We cannot of course do so for $\deg(u) = \deg(v) = k >1, k \in 2\mathbb{Z}$ since for a clique on k+1 nodes this rule would result in total weight $(k+1)/2$.\\
+
+However, we can remove the $+1$ under certain circumstances. We show that if one of the endpoints has degree one then this is the case.
+\fi
+
+%prove several rules of this form.  For each rule we specify values of $\deg(u)$ and $\deg(v)$ for which the %$+1$ can be removed from the denominator of the edge weight.
+%First we restate the claim that isolated edges may safely be assigned weight 1.
+%\begin{lemma}
+%Define $\W(G)$ as follows:\\
+%For each $(u,v) \in G$,\\
+%if $\deg(u) = \deg(v) = 1$, $\W(u,v) =  \min(\frac{1}{\deg(u)},\frac{1}{\deg(v)})$.\\
+%else $\W(u,v) =  \min(\frac{1}{\deg(u)+1},\frac{1}{\deg(v)+1})$.
+%Then $\W(G) \leq M(G)$.
+%\end{lemma}
+%\begin{proof}
+%Already proven above.
+%\end{proof}
+%Next we will amend $\W$ to include the following rule: when one endpoint has degree 1 and the other has %degree k, assign weight $\frac{1}{k}$.
+
+Define $\W$ as follows:
+\[\W=\sum_{(u,v)\in E} \W(u,v) \]
+where
+\[
+\W(u,v)=\frac{1}{\max(\ndegree\lp u\rp, \ndegree\lp v\rp )+I[\min(\ndegree(u),\ndegree(v))> 1]}\]
+
+We now show that $\W \leq M$. We have proven that $W(U)\leq (t-1)/2$ on any odd-size subgraph $U$, $|U| = t$.  Define subsets $U_1$ and $U_2$ of $U$ such that $U_1 \cup U_2 = U$.  $U_1$ is the set of all nodes in $U$ of degree 1 and all nodes in $U$ adjacent to a node of degree 1, and $U_2$ is the set of all other nodes in $U$.  Let $G(U_2)$ denote the subgraph of $U$ induced by $U_2$, and let $|U_1| = x$ where x is even.  Then $W(G(U_2)) = \W(G(U_2)) \leq (t-x-1)/2$.  So to complete our proof we must show that all remaining edges (call them $E'$) have total weight $\leq x/2$.
+
+Assume WLOG that there are no isolated edges in $G$ (if there are, we can group them with $G(U_2)$ and retain the $(t-x-1)/2$ bound).
+
+\begin{align*}
+\W(E') & \leq \frac{1}{2} \sum_{u,v \in E'} \lp \frac{1}{\deg(u)}+\frac{1}{\deg(v)}\rp\\
+& = \mathlarger{\sum_k} \Big(\sum_{v \in U_1, \deg(v) = k} \frac{\delta}{k} + \frac{k-\delta}{2(k+1)}\Big)
+\end{align*}
+where $\delta$ denotes the number of degree 1 nodes adjacent to $v$.\\
+Let $f(\delta) = \delta/k + (k-\delta)/(2(k+1))$.  We are interested in finding the maximum value $f(\delta)/(\delta+1)$ can take on; if it can never take a value greater than $1/2$ then $\W(E')$ cannot be greater than $x/2$.
+$$\frac{\partial\frac{f(\delta)}{\delta+1}}{\partial \delta} = \frac{2-k}{2k(\delta+1)^2}$$
+which is always negative for $k \geq 2$.  So, $f(\delta)/(\delta+1)$ is maximized at $\delta = 0$, so  $f(\delta)/(\delta+1) \leq k/(2(k+1)) < 1/2.$
+
+There is one final detail we have not considered: $x$ might be odd.  In this case, $|U_2|$ is even and we can't appeal to Theorem 3 to say that $\W(G(U_2)) \leq (t-x-1)/2$.  However, we can simply remove one node $\node'$ from $U_2$; the resulting odd-size subgraph has weight at most $(t-x-2)/2$.  Since $\W$ is a valid fractional matching, the weight assigned to all edges adjacent to $\node'$ cannot exceed 1, so we can say that $\W(G(U_2)) \leq (t-x)/2$.  Now we must show that $\W(E') \leq (x-1)/2$.
+
+We have shown that the edge weight per node in $U_1$ cannot exceed $1/2$.  $\W(E')$ is minimized when there is exactly 1 node of degree 1, with a degree k neighbor. In this case, the only edge in $E'$ will be assigned weight $k/(2(k+1))< 1/2$.  $\W(E') \leq 1/2 + (x-2)/2 = (x-1)/2$ and the theorem is proven.
+\end{proof}
+
+
+\paragraph*{A remark on estimating $\W$.}  If we wish to use this lower bound to decide whether to begin meshing by predicting the size of the maximum matching, we cannot compute it exactly because we do not know the degrees of the nodes in the graph.  However, we do know the degree distribution of the graph and so it is possible to calculate the expected value of $\W$.
+
+
 
 
 
@@ -346,9 +452,7 @@ show that probabilistically, we can do nearly as well by finding the
 maximum \textsc{Matching}, a much easier graph problem. We analyze our
 meshing algorithm as an approximation to the maximum matching on a
 random meshing graph, and argue that it succeeds with high
-probability.
-%Finally, we prove a new lower bound on the maximum matching for graphs
-%based on degree distribution.
+probability.  Finally, we prove a new lower bound on the maximum matching for graphs based on degree distribution.
 As a corollary of these results, \Mesh breaks the Robson
 bounds with high probability.
 

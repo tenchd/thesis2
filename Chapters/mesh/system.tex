@@ -1,4 +1,4 @@
-\section{Implementation}
+\subsection{Implementation}
 \label{sec:allocator}
 
 We implement \Mesh as a drop-in replacement memory allocator that
@@ -46,16 +46,21 @@ entire page. \Mesh does not consider these objects for meshing;
 instead, the pages are directly freed to the OS.
 
 \Mesh's heap organization consists of four main components.
-\emph{MiniHeaps} track occupancy and other metadata for spans
-(\S\ref{sec:miniheaps}).  \textit{Shuffle vectors} enable efficient,
-random allocation out of a MiniHeap (\S\ref{sec:shuffle-freelists}).
+\emph{MiniHeaps} track occupancy and other metadata for spans.
+%(\S\ref{sec:miniheaps}).  
+\textit{Shuffle vectors} enable efficient,
+random allocation out of a MiniHeap. %(\S\ref{sec:shuffle-freelists}).
 \textit{Thread local heaps} satisfy small-object allocation requests
-without the need for locks or atomic operations in the common case
-(\S\ref{sec:thread-local-heaps}). Finally, the \textit{global heap}
+without the need for locks or atomic operations in the common case.
+%(\S\ref{sec:thread-local-heaps}). 
+Finally, the \textit{global heap}
 (\S\ref{sec:global-heap}) manages runtime state shared by all threads,
-large object allocation, and coordinates meshing operations
-(\S\ref{sec:meshing-implementation}).
+large object allocation, and coordinates meshing operations.
+%(\S\ref{sec:meshing-implementation}).
+We omit detailing discussion of these components of \Mesh in this document.
 
+
+\iffalse
 
 \subsection{MiniHeaps}
 \label{sec:miniheaps}
@@ -444,3 +449,6 @@ using one of several interfaces~\cite{lwn:hp-interfaces}.
 %% memory from traditional to huge pages.  Many databases and server
 %% workloads like redis~\cite{redis:thb}, MongoDB~\cite{mongodb:thb}, and
 %% Oracle~\cite{oracle:thb} recommend disabling transparent huge pages.
+
+
+\fi

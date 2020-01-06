@@ -35,7 +35,7 @@ inclusion in other applications and studies.
 We additionally demonstrate the utility of \sysname{} in improving
 real-world applications for circumventing Internet censorship and preserving anonymity online.
 
-\subsection{Current Status}
+\subsection*{Current Status}
 The bulk of the work for \sysname{} is finished.  We have designed and analyzed the algorithms that power the system, and a functional prototype is running and accessible online.  \sysname{} will soon be submitted to SIGCOMM 2020 (since SIGCOMM's review process is double-blind, the prototype is not yet  publically available).
 
 \section{Unique Cover and Capacitated Max Cut}
@@ -54,8 +54,8 @@ Our main results to date are as follows.%We present data stream algorithms using
 \end{itemize} 
 We also present a one-pass $O(mk/\epsilon^{2} \cdot \polylog(m,n))$ space algorithm that returns a $1-\epsilon$ approximation for $\uc(k)$. On the lower bound side, we show that any constant-pass algorithm for $\uc(k)$ that finds an approximation better than $e^{-1}$ requires $\Omega(m/k^2)$ space and any one-pass algorithm that finds a $1-\epsilon$ approximation requires $\Omega(\epsilon^{-2} m)$ space even for constant $k$.
 
-\subsection{Current Status}
-We are currently looking for ways to improve the results known in the paper.  For instance, can we 
+\subsection*{Current Status}
+We are currently looking for ways to improve the results presented in the paper.  For instance, can we tighten the gap between the upper and lower bounds for finding a  $1-\epsilon$ approximation to $\uc(k)$ when k is not constant?  Can we improve the one-pass $\Omega(1/\log k)$ approximation algorithm for $\uc(k)$?
 
 
 \section{Temporal Graph Streaming}
@@ -69,13 +69,13 @@ What can be computed in this setting?  A natural first property to study is conn
 
 There are many problems to consider in this domain. Does $D$ contain a journey that visits every node at least once?  Can we extend classic graph streaming techniques like fingerprinting to the temporal graph setting?  How would one find maximum matchings on $D$ subject to edge time constraints (e.g., matching edges must have distinct timestamps, or must all have the same timestamp)?
 
-\subsection{Current Status}
-We have proven some lower bounds for variations of the streaming journey problem.  $\theta(n)$ space is necessary and sufficient for deciding whether there is a journey if we know the start node of the journey before the stream.  If we do not know the start or end node of the journey before the stream, and the temporal graph is directed, journey decision requires $\Omega(n^2)$ space.  $\Omega(n^2)$ space is also necessary if edges appear out of timestamp order in the stream, or if the journey can only contain edges after an arbitrary timestep. Given a destination node $v$ at the end of the stream, we can compute how many $u,v$ journeys exist for all $u \in V$, or sample uniformly at random from all such $u$, in $O(n \polylog(n))$ space.  
+\subsection*{Current Status}
+We have proven some lower bounds for variations of the streaming journey problem.  $\theta(n)$ space is necessary and sufficient for deciding whether there is a journey if we know the start node of the journey before the stream.  If we do not know the start or end node of the journey before the stream, and the temporal graph is directed, journey decision requires $\Omega(n^2)$ space.  $\Omega(n^2)$ space is also necessary if edges appear out of timestamp order in the stream, or if the journey can only contain edges after an arbitrary timestep. Given a destination node $v$ at the end of the stream, we can compute how many $u,v$ journeys exist for all $u \in V$, or sample uniformly at random from all such $u$, in $O(n \polylog(n))$ space.  Additionally, if the edges in the stream are drawn uniformly at random from all possible edges in the graph, the graph contains a journey between any pair of nodes with high probability once it has $k = O(n \polylog(n)$ edges, suggesting that storing the first $k$ edges of a random stream is sufficient.
 
 \section{Graph Reconstruction from Random Queries}
 \label{sec:recon}
 
 Say we have query access to a graph in the sense that we can make a query that returns an induced subgraph of a graph $G$ where each node is present in the induced subgraph with probability 1/2. How many such queries are required to reconstruct the original graph? More generally, say we instead want to reconstruct a matrix where each query returns the matrix with each (unlabeled) row and column removed with probability 1/2. How many queries are required in this case?
 
-\subsection{Current Status}
+\subsection*{Current Status}
 We have just begun to consider this class of problems and have no significant results yet.
