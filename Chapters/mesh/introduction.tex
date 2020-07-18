@@ -10,6 +10,7 @@
 \section{Introduction}
 \label{sec:introduction}
 
+\begin{comment}
 Memory consumption is a serious concern across the spectrum of modern
 computing platforms, from mobile to desktop to datacenters. For
 example, on low-end Android devices, Google reports that more than 99
@@ -23,38 +24,11 @@ utilization~\cite{jemalloc:exposehints,redis:announcement}.
 %% while
 %% Google reports that 10\% of CPU cycles in their clusters are spent on
 %% memory allocation~\cite{kanev:2015:warehouse-scale}.
+\end{comment}
 
 
-\begin{figure*}[t!]
-  \centering
-  \subfloat[\textbf{Before:} these pages are candidates for
-      ``meshing'' because their allocated objects do not
-      overlap.\vspace{2em}]{
-      \includegraphics[width=0.45\textwidth]{Chapters/mesh/figures/mesh-diagram-1}
-      \label{pre-meshing}
-  }
-  ~~~~~
-  \centering
-  \subfloat[\textbf{After:} both virtual pages now point to the
-      first physical page; the second page is now freed.]{
-      \includegraphics[width=0.45\textwidth]{Chapters/mesh/figures/mesh-diagram-2}
-      \label{post-meshing}
-  }
 
-  \caption{\textbf{\Mesh{} in action.} \Mesh{} employs novel
-    randomized algorithms that let it efficiently find and then
-    ``mesh'' candidate pages within \emph{spans} (contiguous 4K pages)
-    whose contents do not overlap.  In this example, it increases
-    memory utilization across these pages from 37.5\% to 75\%, and
-    returns one physical page to the OS (via \texttt{munmap}),
-    reducing the overall memory footprint. \Mesh{}'s randomized
-    allocation algorithm ensures meshing's effectiveness with high
-    probability.}
-
-  \label{fig:meshing}
-\end{figure*}
-
-
+\begin{comment}
 A key challenge is that, unlike in garbage-collected environments,
 automatically reducing a C/C++ application's memory footprint
 via compaction is not possible. Because the addresses of allocated
@@ -78,6 +52,7 @@ in memory consumption can be as high as the $\log$ of the ratio
 between the largest and smallest object sizes allocated. For example,
 for an application that allocates 16-byte and 128KB objects, it is
 possible for it to consume $13\times$ more memory than required.
+\end{comment}
 
 %Embedded systems designed for the Internet-of-Things (IoT), such as the Raspberry Pi Zero W, ship with wireless networking, 3D graphics, and complete operating system stacks but only hundreds of megabytes of memory~\cite{rpi:zero}, placing memory at a premium.
 
@@ -150,6 +125,35 @@ remaps one of the \emph{virtual} pages to point to the single
 \emph{physical} page now holding the contents of both pages, and
 finally relinquishes the other physical page to the
 OS. Figure~\ref{fig:meshing} illustrates meshing in action.
+
+\begin{figure*}[t!]
+  \centering
+  \subfloat[\textbf{Before:} these pages are candidates for
+      ``meshing'' because their allocated objects do not
+      overlap.\vspace{2em}]{
+      \includegraphics[width=0.45\textwidth]{Chapters/mesh/figures/mesh-diagram-1}
+      \label{pre-meshing}
+  }
+  ~~~~~
+  \centering
+  \subfloat[\textbf{After:} both virtual pages now point to the
+      first physical page; the second page is now freed.]{
+      \includegraphics[width=0.45\textwidth]{Chapters/mesh/figures/mesh-diagram-2}
+      \label{post-meshing}
+  }
+
+  \caption{\textbf{\Mesh{} in action.} \Mesh{} employs novel
+    randomized algorithms that let it efficiently find and then
+    ``mesh'' candidate pages within \emph{spans} (contiguous 4K pages)
+    whose contents do not overlap.  In this example, it increases
+    memory utilization across these pages from 37.5\% to 75\%, and
+    returns one physical page to the OS (via \texttt{munmap}),
+    reducing the overall memory footprint. \Mesh{}'s randomized
+    allocation algorithm ensures meshing's effectiveness with high
+    probability.}
+
+  \label{fig:meshing}
+\end{figure*}
 
 \Mesh{} overcomes two key technical challenges of meshing that previously made
 it both inefficient and potentially entirely ineffective. First,

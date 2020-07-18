@@ -175,6 +175,8 @@ Vertex connectivity exhibits markedly different combinatorial structure than edg
 
 %\keywords{data streams; graph sketching; vertex connectivity; hypergraphs; sparsification}
 
+\begin{comment}
+
 \section{The Dynamic Graph Streaming Setting}
 
 Massive graphs arise in many applications. Popular examples include the web-graph, social networks, and biological networks but, more generally, graphs are a natural abstraction whenever we have information about both a set of basic entities and relationships between these entities. Unfortunately, it is not possible to use existing algorithms to process many of these graphs; many of these graphs are too large to be stored in main memory and are constantly changing. Rather, there is a growing need to design new algorithms for even basic graph problems in the relevant computational models. 
@@ -204,6 +206,8 @@ modelling communication in parallel sparse-martix vector multiplication
 \cite{CatalyurekA99}.
 
 Kogan and Krauthgamer \cite{KoganK14} recently presented the first stream algorithm for hypergraph sparsification in the insert-only model. In Section \ref{sec:hypesparsification}, we present the first algorithm that supports both edge insertions and deletions. The algorithm uses $O(n\polylog n)$ space assuming that size of the hyperedges is bounded by a  constant. This result is part of a growing body of work on processing hypergraphs in the data stream model\cite{SahaG09,EmekR14,RadhakrishnanS11,Sun13,KoganK14}. There are numerous challenges in extending previous work on graph sparsification \cite{AhnGM12b,AhnGM13,KapralovLMMS14,KapralovW14,GoelKP12} to hypergraph sparsification and we discuss these in Section \ref{sec:hypesparsification}. In the process of overcoming these challenges, we also identify a simpler approach for graph sparsification in the data stream model.
+
+\end{comment}
 
 \section{Models and Preliminaries}
 

@@ -9,6 +9,90 @@ The vast growth in recent years of the scope of computing and data science chall
 
 In this proposal we investigate algorithmic challenges in two broad settings where aspects of the random access assumption fail: the \emph{streaming} domain, where a massive input is only accessible as an arbitrarily-ordered sequence of elements and working memory is sharply limited; and \emph{query-accessible} inputs, for which accessing a piece of the input requires the algorithm to pay a high price in computation time, energy, money, durability, or some other scarce resource.
 
+\section{The Dynamic Graph Streaming Setting}
+
+Massive graphs arise in many applications. Popular examples include the web-graph, social networks, and biological networks but, more generally, graphs are a natural abstraction whenever we have information about both a set of basic entities and relationships between these entities. Unfortunately, it is not possible to use existing algorithms to process many of these graphs; many of these graphs are too large to be stored in main memory and are constantly changing. Rather, there is a growing need to design new algorithms for even basic graph problems in the relevant computational models. 
+
+In Chapter \ref{chap:vertex}, we consider algorithms in the dynamic data stream and linear sketching models. In the dynamic data stream model, a sequence of edge insertions and deletions defines an input graph and the goal is to solve a specific problem on this graph given only one-way access to the input sequence and limited working memory. While insert-only graph streaming has been an active area of research for over a decade, it is only relatively recently algorithms have been found that handle insertions and deletions\cite{AhnGM12a,AhnGM12b,AhnGM13,KapralovLMMS14,KapralovW14,GoelKP12,KutzkovP14a}. The main technique used in these algorithms is \emph{linear sketching} where a random linear projection of the input graph is maintained as the graph is updated. To be useful, we need to be able to a) store the projection of the graph in small space and b) solve the problem of interest given only the projection of the graph. While linear sketching is a classic technique for solving statistical problems in the data stream model, it was long thought unlikely to be useful in the context of combinatorial problems on graphs. Not only do linear sketches allow us to process edge deletions (a deletion can just be viewed as a ``negative" insertion) but the linearity of the resulting data structures enables a rich set of algorithmic operations to be performed after the sketch has been generated. Linear sketches are also a useful technique for reducing communication when processing distributed graphs. For a recent survey of graph streaming and sketching  see  \cite{McGregor14}.
+
+\subsection{Our Contributions and Related Work}
+We present sketch-based dynamic graph algorithms for three basic graph problems: computing vertex connectivity, graph reconstruction, and hypergraph sparsification. All our algorithms run in (low) polynomial time, typically linear in the number of edges. However, our primary focus is on space complexity, as is the convention in much of the data streams literature. In what follows, let $n$ denote the number of vertices in the graph.
+% algorithms, is  focus our attention on space complexity which is more critical in our setting.
+%All the algorithms use $O(n\polylog n)$ space.
+
+\pparagraph{Vertex Connectivity.} To date, the main success story for graph sketching has been  about edge connectivity, i.e., estimating how many edges need to be removed to disconnect the graph, and estimating the size of cuts. In this chapter we present the first dynamic graph stream algorithms for vertex connectivity, i.e., estimating how many \emph{vertices} need to be removed to disconnect the graph. While it can be shown that edge connectivity is an upper bound for vertex connectivity, the vertex connectivity of a graph can be much smaller. Furthermore, the combinatorial structure relevant to both quantities is very different. For example, edge-connectivity is transitive\footnote{If it takes at least $ k$ edge deletions to disconnect $u$ and $v$ and it takes at least $ k$ edge deletions to disconnect $v$ and $w$, then it takes at least $ k$ edge deletions to disconnect $u$ and $w$.} whereas vertex-connectivity is not. A celebrated result by Karger \cite{karger1994} bounds the number of near minimum cuts whereas no analogous bound is known for vertex removal.  Feige et al.~\cite{FeigeHL05} discuss issues that arise specific to vertex connectivity in the context of approximation algorithms and embeddings.
+
+
+In Section \ref{sec:vertex}, we present two sketch-based algorithms for vertex connectivity. The first algorithm uses $O(kn\polylog n)$ space and constructs a data structure such that, at the end of the stream, it is possible to test whether the removal of a queried set of at most $k$ vertices would disconnect the graph. We  prove that this algorithm is optimal in terms of its space use. The second algorithm estimates the vertex connectivity up to a  $(1+\epsilon)$ factor using $O(\epsilon^{-1} kn\polylog n)$ space where $k$ is an upper bound on the vertex connectivity. 
+
+No stream algorithms were previously known that supported both edge insertions and deletions. Existing approaches either use $\Omega(n^2)$ space \cite{Sankowski07} or only handle insertions \cite{EppsteinGIN97}. With only insertions, Eppstein et al.~\cite{EppsteinGIN97} proved that $O(kn \polylog n)$ space was sufficient. Their algorithm drops an inserted edge $\{u,v\}$ iff there already exists $k$ vertex-disjoint paths between $u$ and $v$ amongst the edges stored thus far. Such an algorithm fails in the presence of edge deletions since some of the vertex disjoint paths that existed when an edge was ignored need not exist if edges are subsequently deleted.
+
+\pparagraph{Graph Reconstruction.} Our next result relates to reconstructing graphs rather than estimating properties of the graph. Becker et al.~\cite{BeckerMNRST11} show that is possible to reconstruct a $d$-degenerate graph given an $O(d \polylog n)$ size sketch of each row of the adjacency matrix of the graph. In Section \ref{sec:recon}, we define the  $d$-cut-degeneracy and show that the strictly larger class of graphs that satisfy this property can also be reconstructed given an $O(d \polylog n)$-size sketch of each row. Moreover, even if the graph is not $d$-cut-degenerate we show that we can find all edges with a certain connectivity property. This will be an integral part of our algorithm for hypergraph sparsification. For this purpose, we also prove the first dynamic graph stream algorithms for hypergraph connectivity in this section. We also extend the vertex connectivity results to hypergraphs.
+
+
+\pparagraph{Hypergraph Sparsification.}
+Hypergraph sparsification is a natural extension of graph sparsification. Given a hypergraph, the goal is to find a sparse weighted subgraph such that the weight of every cut in the subgraph is within a $(1+\epsilon)$ factor of the weight of the corresponding cut in the original hypergraph. 
+Estimating hypergraph cuts has applications in video object segmentation \cite{HuangLM09}, network security analysis \cite{Yamaguchi14},  load balancing in parallel computing \cite{CatalyurekBDBHR09}, and
+modelling communication in parallel sparse-martix vector multiplication 
+\cite{CatalyurekA99}.
+
+Kogan and Krauthgamer \cite{KoganK14} recently presented the first stream algorithm for hypergraph sparsification in the insert-only model. In Section \ref{sec:hypesparsification}, we present the first algorithm that supports both edge insertions and deletions. The algorithm uses $O(n\polylog n)$ space assuming that size of the hyperedges is bounded by a  constant. This result is part of a growing body of work on processing hypergraphs in the data stream model\cite{SahaG09,EmekR14,RadhakrishnanS11,Sun13,KoganK14}. There are numerous challenges in extending previous work on graph sparsification \cite{AhnGM12b,AhnGM13,KapralovLMMS14,KapralovW14,GoelKP12} to hypergraph sparsification and we discuss these in Section \ref{sec:hypesparsification}. In the process of overcoming these challenges, we also identify a simpler approach for graph sparsification in the data stream model.
+ 
+\section{Graph Algorithms for Systems Challenges}
+
+A significant portion of the work to be presented in the full dissertation is applications of graph algorithms to practical systems challenges, resulting in open-source software which we show both analytically and empirically to be effective and efficient.  In this proposal, we present one such completed and published project, \Mesh, a memory manager that is capable of memory compaction in C and C++, a feat long thought impossible.
+
+\subsection{Memory Compaction Powered by Graph Algorithms}
+Memory consumption is a serious concern across the spectrum of modern
+computing platforms, from mobile to desktop to datacenters. For
+example, on low-end Android devices, Google reports that more than 99
+percent of Chrome crashes are due to running out of memory when
+attempting to display a web page~\cite{hara:stateofblink}. On
+desktops, the Firefox web browser has been the subject of a five-year
+effort to reduce its memory footprint~\cite{awsy}. In datacenters,
+developers implement a range of techniques from custom allocators to
+other \emph{ad hoc} approaches in an effort to increase memory
+utilization~\cite{jemalloc:exposehints,redis:announcement}.
+%% while
+%% Google reports that 10\% of CPU cycles in their clusters are spent on
+%% memory allocation~\cite{kanev:2015:warehouse-scale}.
+
+
+A key challenge is that, unlike in garbage-collected environments,
+automatically reducing a C/C++ application's memory footprint
+via compaction is not possible. Because the addresses of allocated
+objects are directly exposed to programmers, C/C++ applications can
+freely modify or hide addresses.  For example, a program may stash
+addresses in integers, store flags in the low bits of aligned
+addresses, perform arithmetic on addresses and later reference them,
+or even store addresses to disk and later reload them.  This hostile
+environment makes it impossible to safely relocate objects: if an
+object is relocated, all pointers to its original location must be
+updated. However, there is no way to safely update \emph{every}
+reference when they are ambiguous, much less when they are absent.
+
+Existing memory allocators for C/C++ employ a variety of
+best-effort heuristics aimed at reducing average
+fragmentation~\cite{johnstone:1998:fragmentation}. However, these
+approaches are inherently limited. In a classic result, Robson showed
+that all such allocators can suffer from catastrophic
+memory fragmentation~\cite{robson:1977:worstcasefrag}. This increase
+in memory consumption can be as high as the $\log$ of the ratio
+between the largest and smallest object sizes allocated. For example,
+for an application that allocates 16-byte and 128KB objects, it is
+possible for it to consume $13\times$ more memory than required.
+
+
+Chapter \ref{chap:mesh} introduces \Mesh, a plug-in replacement for \texttt{malloc}
+that, for the first time, eliminates fragmentation in unmodified
+C/C++ applications. \Mesh combines novel randomized algorithms with
+widely-supported virtual memory operations to provably reduce
+fragmentation, breaking the classical Robson bounds with high
+probability. We focus here on the randomized algorithms which power \Mesh and proofs of their solution quality and runtime.  \Mesh generally matches the runtime performance of
+state-of-the-art memory allocators while reducing memory consumption;
+in particular, it reduces the memory of consumption of Firefox by 16\%
+and Redis by 39\%.
+
 \section{Overview}
 
 In Chapter~\ref{chap:vertex}, we describe the dynamic graph streaming model, where a graph is defined by a sequence of edge insertions and deletions and we must compute some property of this graph given only one-way access to the input sequence and limited working memory.  We then present algorithms and lower bounds for vertex connectivity, graph reconstruction, and hypergraph sparsification in this model.  In Chapter~\ref{chap:mesh}, we present \Mesh, a memory manager for C and C++ that performs memory compaction despite the fact that this has long been thought to be impossible in these languages. We demonstrate that the problem of efficiently compacting memory in these languages can be reduced to an algorithmic graph problem, analytically prove that \Mesh's core query-based meshing algorithm performs significant memory compaction with high probability, and empirically verify its performance.  In Chapter~\ref{chap:futurework} we describe current and future research projects, including computing maximum unique cover and capacitated maximum cut in graph streams, extensions to the graph streaming model where edges exist at some times and not others, a network measurement system that makes efficient use of limited measurement resources, and query-based graph reconstruction problems.
